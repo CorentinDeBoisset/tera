@@ -59,40 +59,58 @@ func (m *Model) Focus(idx int) {
 	m.focusedItem = clamp(idx, 0, len(m.items)-1)
 }
 
-func (m *Model) GoToTop() {
+func (m *Model) GoToTop() string {
 	for i := 0; i < len(m.items); i++ {
 		if m.items[i].Focusable() {
 			m.Focus(i)
-			return
+			return m.items[i].Id()
 		}
 	}
+
+	return ""
 }
 
-func (m *Model) GoToBottom() {
+func (m *Model) GoToBottom() string {
 	for i := len(m.items) - 1; i >= 0; i-- {
 		if m.items[i].Focusable() {
 			m.Focus(i)
-			return
+			return m.items[i].Id()
 		}
 	}
+
+	return ""
 }
 
-func (m *Model) ScrollDown(n int) {
+func (m *Model) ScrollDown(n int) string {
 	for i := m.focusedItem + 1; i < len(m.items); i++ {
 		if m.items[i].Focusable() {
 			m.Focus(i)
-			return
+			return m.items[i].Id()
 		}
 	}
+
+	// Fallback to the current item
+	if m.focusedItem > 0 && m.focusedItem < len(m.items) {
+		return m.items[m.focusedItem].Id()
+	}
+
+	return ""
 }
 
-func (m *Model) ScrollUp(n int) {
+func (m *Model) ScrollUp(n int) string {
 	for i := m.focusedItem - 1; i >= 0; i-- {
 		if m.items[i].Focusable() {
 			m.Focus(i)
-			return
+			return m.items[i].Id()
 		}
 	}
+
+	// Fallback to the current item
+	if m.focusedItem > 0 && m.focusedItem < len(m.items) {
+		return m.items[m.focusedItem].Id()
+	}
+
+	return ""
 }
 
 func (m *Model) PageDown() string {

@@ -208,7 +208,7 @@ func (m *Model) Resize(width, height int) {
 }
 
 func (m *Model) maxOffset() int {
-	innerFrameHeight := m.height - m.frameStyle.GetVerticalFrameSize()
+	innerFrameHeight := m.InnerFrameHeight()
 	if m.showSearch {
 		innerFrameHeight -= 2 // The search always has one line of content plus a border
 	}

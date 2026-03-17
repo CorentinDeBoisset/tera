@@ -29,7 +29,7 @@ type SafeBuffer struct {
 func (s *SafeBuffer) Write(p []byte) (n int, err error) {
 	s.mtx.Lock()
 	defer s.mtx.Unlock()
-	s.lastWrite = time.Now().Unix()
+	s.lastWrite = time.Now().UnixMicro()
 	return s.buf.Write(p)
 }
 

@@ -17,9 +17,8 @@ var failureFlag = sync.OnceValue(func() string {
 })
 
 type JobItemView struct {
-	id          string
-	focusable   bool
-	paddingLeft int
+	id        string
+	focusable bool
 
 	label   string
 	stater  *Stater

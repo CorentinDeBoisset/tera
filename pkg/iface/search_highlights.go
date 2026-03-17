@@ -89,16 +89,14 @@ func DecorateCmdOutput(r *regexp.Regexp, content []byte, highLightIdx int, theme
 	currentMatchIdx := 0
 	lineNb := 0
 	matchLines := make([]int, len(matches))
+
+	// Walk the input sequence and count lines
 	for _, sequence := range sequences {
-		if bytes.Equal(sequence.content, []byte("\n")) {
+		if bytes.Contains(sequence.content, []byte("\n")) {
 			lineNb++
 		}
 
-		for currentMatchIdx < len(matches) && currentOffset >= matches[currentMatchIdx][1] {
-			matchLines[currentMatchIdx] = lineNb
-			currentMatchIdx++
-		}
-
+		// Add highlight to the sequence if the current sequence is after the beginning of the current match
 		if currentMatchIdx < len(matches) && currentOffset >= matches[currentMatchIdx][0] && sequence.visible {
 			if currentMatchIdx == highLightIdx {
 				output = append(output, []byte(theme.InvertedHighlightSurfaceStyle.Render(string(sequence.content)))...)
@@ -109,7 +107,14 @@ func DecorateCmdOutput(r *regexp.Regexp, content []byte, highLightIdx int, theme
 			output = append(output, sequence.content...)
 		}
 
+		// Advance to the end of the sequence
 		currentOffset += sequence.length
+
+		// If this is the end of the match, we save the line number and go to the next match
+		for currentMatchIdx < len(matches) && currentOffset >= matches[currentMatchIdx][1] {
+			matchLines[currentMatchIdx] = lineNb
+			currentMatchIdx++
+		}
 	}
 
 	return output, matchLines

@@ -173,10 +173,10 @@ func LoadHelpTheme() HelpTheme {
 	//
 	// titleStyle := baseTitleStyle.Foreground(lipgloss.AdaptiveColor{Dark: "#52901b", Light: "#72a443"})
 	// cmdStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#52901b", Light: "#72a443"})
-	// subCmdStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#bc7025", Light: "#bc702"}) // FIXME colors
+	// subCmdStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#bc7025", Light: "#bc702"})
 	// dimmedArgStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
 	// codeblockStyle := theme.NoticeableSurfaceStyle.Width(width()-2).Padding(1, 2).Margin(0, 1)
-	// // highlightedArgStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#5b6ce9", Light: "#838ee2"}) // FIXME colors
+	// highlightedArgStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#5b6ce9", Light: "#838ee2"})
 
 	return HelpTheme{
 		BaseTitle:  lipgloss.NewStyle().Foreground(lipgloss.Color("#508000")),

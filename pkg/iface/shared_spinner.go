@@ -14,7 +14,7 @@ func NewSharedSpinner() *SharedSpinner {
 	return &SharedSpinner{
 		spinner: spinner.New(
 			spinner.WithSpinner(spinner.Dot),
-			spinner.WithStyle(lipgloss.NewStyle().Foreground(lipgloss.BrightYellow)),
+			spinner.WithStyle(lipgloss.NewStyle().Foreground(lipgloss.Yellow)),
 		),
 	}
 }

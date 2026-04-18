@@ -9,11 +9,11 @@ import (
 )
 
 var successFlag = sync.OnceValue(func() string {
-	return lipgloss.NewStyle().Foreground(lipgloss.BrightGreen).Bold(true).Render("✓")
+	return lipgloss.NewStyle().Foreground(lipgloss.Green).Render("✓")
 })
 
 var failureFlag = sync.OnceValue(func() string {
-	return lipgloss.NewStyle().Foreground(lipgloss.BrightRed).Bold(true).Render("✗")
+	return lipgloss.NewStyle().Foreground(lipgloss.Red).Render("✗")
 })
 
 type JobItemView struct {
@@ -64,7 +64,7 @@ func (m *JobItemView) View() string {
 
 	labelStyle := lipgloss.NewStyle()
 	if m.focusLevel >= 1 {
-		labelStyle = labelStyle.Foreground(lipgloss.BrightBlue).Bold(true)
+		labelStyle = labelStyle.Foreground(lipgloss.Blue)
 	}
 	if m.focusLevel >= 2 {
 		labelStyle = labelStyle.Underline(true)

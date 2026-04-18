@@ -49,6 +49,34 @@ func TestHslToHex(t *testing.T) {
 	assert.Equal(t, "#ba20d5", hslToHex(ColorHsl{291, 0.74, 0.48}))
 }
 
+func TestHexToColor(t *testing.T) {
+	t.Parallel()
+
+	assert.Equal(t, color.RGBA{0, 0, 0, 255}, hexToColor("#000000"))
+
+	assert.Equal(t, color.RGBA{128, 128, 128, 255}, hexToColor("#808080"))
+	assert.Equal(t, color.RGBA{128, 128, 128, 255}, hexToColor("808080"))
+
+	assert.Equal(t, color.RGBA{160, 164, 36, 255}, hexToColor("#a0a424"))
+
+	assert.Equal(t, color.RGBA{98, 203, 238, 255}, hexToColor("#62cbee"))
+
+	assert.Equal(t, color.RGBA{186, 32, 213, 255}, hexToColor("#ba20d5"))
+
+	// Test short hex colors
+	assert.Equal(t, color.RGBA{34, 34, 34, 255}, hexToColor("#222"))
+	assert.Equal(t, color.RGBA{255, 170, 68, 255}, hexToColor("#FA4"))
+	assert.Equal(t, color.RGBA{255, 170, 68, 255}, hexToColor("FA4"))
+
+	// Test error inputs
+	assert.Equal(t, color.RGBA{0, 0, 0, 0}, hexToColor(""))                // too short string
+	assert.Equal(t, color.RGBA{0, 0, 0, 0}, hexToColor("very long input")) // too long string
+	assert.Equal(t, color.RGBA{0, 0, 0, 0}, hexToColor("somthng"))         // 7 letter input without '#'
+	assert.Equal(t, color.RGBA{0, 0, 0, 0}, hexToColor("somt"))            // 4 letter input without '#'
+	assert.Equal(t, color.RGBA{0, 0, 0, 0}, hexToColor("supere"))          // 6 letter input but non-parseable
+	assert.Equal(t, color.RGBA{0, 0, 0, 0}, hexToColor("sup"))             // 3 letter input but non-parseable
+}
+
 func TestColorHsl(t *testing.T) {
 	t.Parallel()
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"math"
+	"strconv"
 )
 
 type ColorHsl struct {
@@ -24,6 +25,46 @@ func (c ColorHsl) Hex() string {
 
 // The color calulation methods are inspired from: https://gist.github.com/ciembor/1494530
 // Kudos to them :)
+
+func hexToColor(input string) color.Color {
+	switch len(input) {
+	case 4:
+		if input[0] != '#' {
+			return color.RGBA{}
+		}
+		input = input[1:]
+		fallthrough
+
+	case 3:
+		values, err := strconv.ParseUint(string(input), 16, 16)
+		if err != nil {
+			return color.RGBA{}
+		}
+		r := uint8(((values >> 8) & 0xF) | ((values >> 4) & 0xF0))
+		g := uint8(((values >> 4) & 0xF) | (values & 0xF0))
+		b := uint8((values & 0xF) | ((values << 4) & 0xF0))
+		return color.RGBA{r, g, b, 255}
+
+	case 7:
+		if input[0] != '#' {
+			return color.RGBA{}
+		}
+		input = input[1:]
+		fallthrough
+
+	case 6:
+		values, err := strconv.ParseUint(string(input), 16, 32)
+		if err != nil {
+			return color.RGBA{}
+		}
+		r := uint8((values >> 16) & 0xFF)
+		g := uint8((values >> 8) & 0xFF)
+		b := uint8(values & 0xFF)
+		return color.RGBA{r, g, b, 255}
+	}
+
+	return color.RGBA{}
+}
 
 func colorToHsl(bgColor color.Color) ColorHsl {
 	r, g, b, _ := bgColor.RGBA()

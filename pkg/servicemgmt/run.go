@@ -24,7 +24,8 @@ func StartServiceManagement(confPath string) error {
 		return err
 	}
 
-	theme := iface.LoadTheme()
+	bg := iface.BackgroundColor()
+	theme := iface.LoadTheme(bg)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGQUIT)
 	defer stop()

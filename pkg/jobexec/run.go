@@ -59,7 +59,8 @@ func ExecuteJob(confPath string, jobToRun string) error {
 	go executeJob(ctx, config.BasePath, pickedJob, stepStatuses, readyToDisplay, jobDone)
 	<-readyToDisplay
 
-	theme := iface.LoadTheme()
+	bg := iface.BackgroundColor()
+	theme := iface.LoadTheme(bg)
 	_, err = tea.NewProgram(newModel(pickedJob, stepStatuses, theme), tea.WithContext(ctx), tea.WithoutSignalHandler()).Run()
 	if errors.Is(err, tea.ErrProgramKilled) {
 		err = nil

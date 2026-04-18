@@ -25,7 +25,7 @@ type JobItemView struct {
 	spinner *iface.SharedSpinner
 	theme   iface.Theme
 
-	focused bool
+	focusLevel int
 
 	currentStyle lipgloss.Style
 	cachedHeight int
@@ -41,7 +41,7 @@ func NewJobItemView(id string, focusable bool, paddingLeft int, label string, st
 		spinner: spinner,
 		theme:   theme,
 
-		focused: false,
+		focusLevel: 0,
 
 		currentStyle: lipgloss.NewStyle().PaddingLeft(paddingLeft),
 		cachedHeight: 1,
@@ -63,8 +63,11 @@ func (m *JobItemView) View() string {
 	var content string
 
 	labelStyle := lipgloss.NewStyle()
-	if m.focused {
-		labelStyle = labelStyle.Bold(true).Foreground(lipgloss.Blue).Underline(true)
+	if m.focusLevel >= 1 {
+		labelStyle = labelStyle.Foreground(lipgloss.BrightBlue).Bold(true)
+	}
+	if m.focusLevel >= 2 {
+		labelStyle = labelStyle.Underline(true)
 	}
 
 	switch m.stater.State() {
@@ -87,8 +90,12 @@ func (m *JobItemView) Focusable() bool {
 	return m.focusable
 }
 
-func (m *JobItemView) SetFocus(focus bool) {
-	m.focused = m.focusable && focus
+func (m *JobItemView) SetFocus(level int) {
+	if m.focusable {
+		m.focusLevel = min(max(level, 0), 2)
+	} else {
+		m.focusLevel = 0
+	}
 }
 
 func (m *JobItemView) SetLabel(label string) {

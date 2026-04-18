@@ -190,13 +190,13 @@ func (m ifaceModel) Init() tea.Cmd {
 
 func (m *ifaceModel) updateFocus(focusedId string) {
 	if _, ok := m.focusableTasks[m.focusedTask]; ok {
-		m.focusableTasks[m.focusedTask].SetFocus(false)
+		m.focusableTasks[m.focusedTask].SetFocus(0)
 	}
 
 	m.focusedTask = focusedId
 
 	if _, ok := m.focusableTasks[focusedId]; ok {
-		m.focusableTasks[focusedId].SetFocus(true)
+		m.focusableTasks[focusedId].SetFocus(2)
 		m.outputPanel.SetBuffer(m.outputs[focusedId])
 	}
 }
@@ -214,6 +214,11 @@ func (m ifaceModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.focusOutput = !m.focusOutput
 				m.outputPanel.SetFocus(m.focusOutput)
 				m.updateKeyBindings()
+				if m.focusOutput {
+					m.focusableTasks[m.focusedTask].SetFocus(1)
+				} else {
+					m.focusableTasks[m.focusedTask].SetFocus(2)
+				}
 			}
 		}
 

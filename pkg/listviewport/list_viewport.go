@@ -35,14 +35,6 @@ func New(width, height int, baseStyle lipgloss.Style) (m Model) {
 	}
 }
 
-func (m *Model) AtTop() bool {
-	return m.focusedItem <= 0
-}
-
-func (m *Model) AtBottom() bool {
-	return m.focusedItem > len(m.items)-1
-}
-
 func (m *Model) SetItems(items []ListItem) {
 	m.items = items
 
@@ -97,6 +89,18 @@ func (m *Model) ScrollDown(n int) string {
 	return ""
 }
 
+func (m *Model) CircularScrollDown(n int) string {
+	for i := m.focusedItem + 1; i < len(m.items); i++ {
+		if m.items[i].Focusable() {
+			m.Focus(i)
+			return m.items[i].Id()
+		}
+	}
+
+	// Fallback by going to the top
+	return m.GoToTop()
+}
+
 func (m *Model) ScrollUp(n int) string {
 	for i := m.focusedItem - 1; i >= 0; i-- {
 		if m.items[i].Focusable() {
@@ -111,6 +115,18 @@ func (m *Model) ScrollUp(n int) string {
 	}
 
 	return ""
+}
+
+func (m *Model) CircularScrollUp(n int) string {
+	for i := m.focusedItem - 1; i >= 0; i-- {
+		if m.items[i].Focusable() {
+			m.Focus(i)
+			return m.items[i].Id()
+		}
+	}
+
+	// Fallback by going to the bottom
+	return m.GoToBottom()
 }
 
 func (m *Model) PageDown() string {

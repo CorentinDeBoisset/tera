@@ -228,13 +228,11 @@ func (m ifaceModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		switch msg.String() {
 		case "up", "k":
-			// TODO: create a `CircularScrollUp(n int) string` method
-			focusedId := m.stepPanel.ScrollUp(1)
+			focusedId := m.stepPanel.CircularScrollUp(1)
 			m.updateFocus(focusedId)
 
 		case "down", "j":
-			// TODO: create a `CircularScrollDown(n int) string` method
-			focusedId := m.stepPanel.ScrollDown(1)
+			focusedId := m.stepPanel.CircularScrollDown(1)
 			m.updateFocus(focusedId)
 
 		// Other movement keys, not displayed in the help

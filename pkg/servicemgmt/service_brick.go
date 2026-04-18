@@ -66,12 +66,12 @@ func (s *ServiceBrickModel) SetFocusLevel(level int) {
 }
 
 func (s *ServiceBrickModel) refreshStyles() {
-	brickStyle := s.theme.NoticeableSurfaceStyle
+	brickStyle := s.theme.NoticeableSurface
 	switch s.focusLevel {
 	case 1:
-		brickStyle = s.theme.UnfocusedHighlightSurfaceStyle
+		brickStyle = s.theme.UnfocusedHighlightSurface
 	case 2:
-		brickStyle = s.theme.HighlightSurfaceStyle
+		brickStyle = s.theme.FocusedHighlightSurface
 	}
 
 	s.titleStyle = brickStyle.

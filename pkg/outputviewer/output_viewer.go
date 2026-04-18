@@ -86,10 +86,8 @@ func New(width, height int, theme iface.Theme, buffer *cmdrunr.SafeBuffer) (m Mo
 
 		buffer: buffer,
 
-		theme: theme,
-		frameStyle: lipgloss.NewStyle().
-			Padding(0, 2).
-			BorderForeground(theme.BlurredOutputBorderColor),
+		theme:            theme,
+		frameStyle:       theme.UnfocusedOutputBorder.Padding(0, 2),
 		rawOutput:        nil,
 		displayedContent: nil,
 		offset:           0,
@@ -133,9 +131,9 @@ func (m *Model) SetBuffer(b *cmdrunr.SafeBuffer) {
 
 func (m *Model) SetFocus(focused bool) {
 	if focused {
-		m.frameStyle = m.frameStyle.BorderForeground(m.theme.FocusedOutputBorderColor)
+		m.frameStyle = m.theme.FocusedOutputBorder.Padding(0, 2)
 	} else {
-		m.frameStyle = m.frameStyle.BorderForeground(m.theme.BlurredOutputBorderColor)
+		m.frameStyle = m.theme.UnfocusedOutputBorder.Padding(0, 2)
 	}
 
 	m.searchBar.SetCursorVisibility(focused)

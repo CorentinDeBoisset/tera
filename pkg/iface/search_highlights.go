@@ -99,9 +99,9 @@ func DecorateCmdOutput(r *regexp.Regexp, content []byte, highLightIdx int, theme
 		// Add highlight to the sequence if the current sequence is after the beginning of the current match
 		if currentMatchIdx < len(matches) && currentOffset >= matches[currentMatchIdx][0] && sequence.visible {
 			if currentMatchIdx == highLightIdx {
-				output = append(output, []byte(theme.InvertedHighlightSurfaceStyle.Render(string(sequence.content)))...)
+				output = append(output, []byte(theme.FocusedHighlightText.Render(string(sequence.content)))...)
 			} else {
-				output = append(output, []byte(theme.InvertedUnfocusedHighlightSurfaceStyle.Render(string(sequence.content)))...)
+				output = append(output, []byte(theme.UnfocusedHighlightText.Render(string(sequence.content)))...)
 			}
 		} else {
 			output = append(output, sequence.content...)

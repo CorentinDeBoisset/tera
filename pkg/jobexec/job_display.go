@@ -124,7 +124,7 @@ func (m *ifaceModel) initializeStepPanel() {
 		}
 
 		if stepIdx < len(m.statuses)-1 {
-			jobItemViews = append(jobItemViews, listviewport.NewSeparator(m.width, lipgloss.Black, listviewport.SEPARATOR_BLANK))
+			jobItemViews = append(jobItemViews, listviewport.NewSeparator(m.width, lipgloss.NewStyle(), listviewport.SEPARATOR_BLANK))
 		}
 	}
 

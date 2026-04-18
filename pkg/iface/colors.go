@@ -1,197 +1,111 @@
 package iface
 
 import (
+	"fmt"
 	"image/color"
-	"os"
-	"sync"
-
-	"charm.land/lipgloss/v2"
-	"github.com/lucasb-eyer/go-colorful"
+	"math"
 )
 
-type HelpTheme struct {
-	BaseTitle  lipgloss.Style
-	ErrorTitle lipgloss.Style
-
-	Command    lipgloss.Style
-	SubCommand lipgloss.Style
-	DimmedArg  lipgloss.Style
-	Flag       lipgloss.Style
-
-	Codeblock           lipgloss.Style
-	CodeblockBase       lipgloss.Style
-	CodeblockCommand    lipgloss.Style
-	CodeblockSubCommand lipgloss.Style
-	CodeblockDimmedArg  lipgloss.Style
-	CodeblockFlag       lipgloss.Style
+type ColorHsl struct {
+	H, S, L float64
 }
 
-type Theme struct {
-	NoticeableSurfaceStyle                 lipgloss.Style
-	UnfocusedHighlightSurfaceStyle         lipgloss.Style
-	HighlightSurfaceStyle                  lipgloss.Style
-	InvertedHighlightSurfaceStyle          lipgloss.Style
-	InvertedUnfocusedHighlightSurfaceStyle lipgloss.Style
-
-	SeparatorColor           color.Color
-	BlurredOutputBorderColor color.Color
-	FocusedOutputBorderColor color.Color
+func (c ColorHsl) Clamped() ColorHsl {
+	return ColorHsl{
+		H: min(max(c.H, 0), 360),
+		S: min(max(c.S, 0), 1),
+		L: min(max(c.L, 0), 1),
+	}
 }
 
-// This is the actual color of the background of the terminal
-var BackgroundColor = sync.OnceValue(func() colorful.Color {
-	rawColor, err := lipgloss.BackgroundColor(os.Stdin, os.Stderr)
-	if err != nil || rawColor == nil {
-		return colorful.Hsl(0, 0, 0)
+func (c ColorHsl) Hex() string {
+	return hslToHex(c)
+}
+
+// The color calulation methods are inspired from: https://gist.github.com/ciembor/1494530
+// Kudos to them :)
+
+func colorToHsl(bgColor color.Color) ColorHsl {
+	r, g, b, _ := bgColor.RGBA()
+
+	// Normalize r, g and b to [0, 1]
+	normR := max(min(float64(r)/65535, 1), 0)
+	normG := max(min(float64(g)/65535, 1), 0)
+	normB := max(min(float64(b)/65535, 1), 0)
+
+	cMax := max(normR, normG, normB)
+	cMin := min(normR, normG, normB)
+
+	chroma := cMax - cMin
+	light := (cMax + cMin) / 2
+
+	if chroma == 0 {
+		return ColorHsl{0, 0, light}
 	}
-	bgColor, ok := colorful.MakeColor(rawColor)
-	if !ok {
-		return colorful.Hsl(0, 0, 0)
+
+	var hue, sat float64
+
+	// Calculate the saturation
+	// The denominator is never 0, because if so chroma=0 and this case is handled above
+	sat = chroma / (1 - math.Abs(2*light-1))
+
+	// Calculate the hue
+	switch cMax {
+	case normR:
+		// The double module is to ensure we have a positive result
+		hue = math.Mod(math.Mod((normG-normB)/chroma, 6)+6, 6)
+	case normG:
+		hue = (normB-normR)/chroma + 2
+	default:
+		hue = (normR-normG)/chroma + 4
 	}
-	return bgColor
-})
+	hue *= 60
 
-// The base palette is available here: https://coolors.co/palette/264653-2a9d8f-e9c46a-f4a261-e76f51
+	return ColorHsl{hue, sat, light}
+}
 
-var ErrorColor = lipgloss.Color("1")
+// Convert a hue to r, g, or b
+// The float is in [0, 1]
+func hueToRgb(p, q, t float64) float64 {
+	if t < 0 {
+		t += 1
+	}
+	if t > 1 {
+		t -= 1
+	}
+	if t < 1./6 {
+		return p + (q-p)*6*t
+	}
+	if t < 1./2 {
+		return q
+	}
+	if t < 2./3 {
+		return p + (q-p)*(2./3-t)*6
+	}
 
-func LoadTheme() Theme {
-	bgH, bgS, bgL := BackgroundColor().Hsl()
+	return p
+}
 
-	var noticeableSurfaceColor, unfocusedHighlightSurfaceColor, highlightSurfaceColor colorful.Color
-	var invertedUnfocusedHighlightSurfaceColor, invertedHighlightSurfaceColor colorful.Color
-	var bodyColorOnNoticeable, bodyColorOnUnfocusedHighlight, bodyColorOnHighlight colorful.Color
-	var bodyColorOnInvertedUnfocusedHighlight, bodyColorOnInvertedHighlight colorful.Color
-	var separatorCol, focusedOutputBorderColor colorful.Color
-
-	if bgL < 0.22 {
-		noticeableSurfaceColor = colorful.Hsl(bgH, bgS, 0.15+0.2*bgL).Clamped()
-		bodyColorOnNoticeable = colorful.Hsl(43, 0.58, 0.8+0.2*bgL).Clamped()
-
-		unfocusedHighlightSurfaceColor = colorful.Hsl(92, 0.20, 0.14+0.15*bgL).Clamped()
-		bodyColorOnUnfocusedHighlight = colorful.Hsl(43, 0.58, 0.75)
-
-		highlightSurfaceColor = colorful.Hsl(92, 0.37, 0.15+0.3*bgL).Clamped()
-		bodyColorOnHighlight = colorful.Hsl(43, 1.0, 0.95)
-
-		invertedUnfocusedHighlightSurfaceColor = colorful.Hsl(26.7, 0.65, 0.55)
-		bodyColorOnInvertedUnfocusedHighlight = colorful.Hsl(0, 0, 0.07)
-
-		invertedHighlightSurfaceColor = colorful.Hsl(26.7, 0.95, 0.95)
-		bodyColorOnInvertedHighlight = colorful.Hsl(0, 0, 0.1)
-
-		separatorCol = colorful.Hsl(0, 0, 0.4)
-		focusedOutputBorderColor = colorful.Hsl(26, 0.87, 0.55)
+// Convert an HSL color to its hex RGB representation ("#A1C3EE" for instance)
+// It assumes c.H is in [0, 360], and c.S and c.L are within [0, 1]
+func hslToHex(c ColorHsl) string {
+	var r, g, b uint8
+	if c.S == 0 {
+		// Add 0.5 to avoid rounding errors
+		r, g, b = uint8(c.L*255.+0.5), uint8(c.L*255.+0.5), uint8(c.L*255.+0.5)
 	} else {
-		noticeableSurfaceColor = colorful.Hsl(bgH, 0.05+0.4*bgS, 0.95*bgL).Clamped()
-		bodyColorOnNoticeable = colorful.Hsl(43, 0.58, 0.15*bgL).Clamped()
+		var q float64
+		if c.L < 0.5 {
+			q = c.L * (1 + c.S)
+		} else {
+			q = c.L + c.S - c.L*c.S
+		}
+		p := 2*c.L - q
 
-		unfocusedHighlightSurfaceColor = colorful.Hsl(92, 0.27, 0.85*bgL).Clamped()
-		bodyColorOnUnfocusedHighlight = colorful.Hsl(0, 0, 0.1)
-
-		highlightSurfaceColor = colorful.Hsl(92, 0.27, 0.55)
-		bodyColorOnHighlight = colorful.Hsl(43, 0.58, 0.1)
-
-		invertedUnfocusedHighlightSurfaceColor = colorful.Hsl(26, 0.87, 0.6+0.2*bgL).Clamped()
-		bodyColorOnInvertedUnfocusedHighlight = colorful.Hsl(0, 0, 0.1)
-
-		invertedHighlightSurfaceColor = colorful.Hsl(26, 0.9, 0.15+0.05*bgL).Clamped()
-		bodyColorOnInvertedHighlight = colorful.Hsl(0, 0, 0.95)
-
-		separatorCol = colorful.Hsl(0, 0, 0.15)
-		focusedOutputBorderColor = colorful.Hsl(26, 0.87, 0.67)
+		r = uint8(hueToRgb(p, q, c.H/360+1./3)*255. + 0.5)
+		g = uint8(hueToRgb(p, q, c.H/360)*255. + 0.5)
+		b = uint8(hueToRgb(p, q, c.H/360-1./3)*255. + 0.5)
 	}
 
-	// Convert them all to lipgloss colors
-	lgNoticeableColor := lipgloss.Color(noticeableSurfaceColor.Hex())
-	lgBodyColorOnNoticeable := lipgloss.Color(bodyColorOnNoticeable.Hex())
-
-	lgUnfocusedHighlightSurfaceColor := lipgloss.Color(unfocusedHighlightSurfaceColor.Hex())
-	lgBodyColorOnUnfocusedHighlight := lipgloss.Color(bodyColorOnUnfocusedHighlight.Hex())
-
-	lgHighlightSurfaceColor := lipgloss.Color(highlightSurfaceColor.Hex())
-	lgBodyColorOnHighlight := lipgloss.Color(bodyColorOnHighlight.Hex())
-
-	lgInvertedHighlightSurfaceColor := lipgloss.Color(invertedHighlightSurfaceColor.Hex())
-	lgBodyColorOnInvertedHighlight := lipgloss.Color(bodyColorOnInvertedHighlight.Hex())
-
-	lgInvertedUnfocusedHighlightSurfaceColor := lipgloss.Color(invertedUnfocusedHighlightSurfaceColor.Hex())
-	lgBodyColorOnInvertedUnfocusedHighlight := lipgloss.Color(bodyColorOnInvertedUnfocusedHighlight.Hex())
-
-	return Theme{
-		NoticeableSurfaceStyle: lipgloss.NewStyle().
-			Background(lgNoticeableColor).
-			BorderBackground(lgNoticeableColor).
-			Foreground(lgBodyColorOnNoticeable),
-
-		UnfocusedHighlightSurfaceStyle: lipgloss.NewStyle().
-			Background(lgUnfocusedHighlightSurfaceColor).
-			BorderBackground(lgUnfocusedHighlightSurfaceColor).
-			Foreground(lgBodyColorOnUnfocusedHighlight),
-
-		HighlightSurfaceStyle: lipgloss.NewStyle().
-			Background(lgHighlightSurfaceColor).
-			BorderBackground(lgHighlightSurfaceColor).
-			Foreground(lgBodyColorOnHighlight),
-
-		InvertedHighlightSurfaceStyle: lipgloss.NewStyle().
-			Background(lgInvertedHighlightSurfaceColor).
-			BorderBackground(lgInvertedHighlightSurfaceColor).
-			Foreground(lgBodyColorOnInvertedHighlight),
-
-		InvertedUnfocusedHighlightSurfaceStyle: lipgloss.NewStyle().
-			Background(lgInvertedUnfocusedHighlightSurfaceColor).
-			BorderBackground(lgInvertedUnfocusedHighlightSurfaceColor).
-			Foreground(lgBodyColorOnInvertedUnfocusedHighlight),
-
-		SeparatorColor:           lipgloss.Color(separatorCol.Hex()),
-		FocusedOutputBorderColor: lipgloss.Color(focusedOutputBorderColor.Hex()),
-		BlurredOutputBorderColor: lipgloss.Color("#808080"),
-	}
-}
-
-func LoadHelpTheme() HelpTheme {
-	bgH, bgS, bgL := BackgroundColor().Hsl()
-	lightDark := lipgloss.LightDark(bgL < 0.5)
-
-	var codeblockSurface colorful.Color
-	var codeblockForeground colorful.Color
-
-	if bgL < 0.22 {
-		codeblockSurface = colorful.Hsl(bgH, bgS, 0.15+0.2*bgL).Clamped()
-		codeblockForeground = colorful.Hsl(43, 0.58, 0.8+0.2*bgL).Clamped()
-	} else {
-		codeblockSurface = colorful.Hsl(bgH, bgS, 0.95*bgL).Clamped()
-		codeblockForeground = colorful.Hsl(43, 0.58, 0.15*bgL).Clamped()
-	}
-
-	lgCodeblockSurface := lipgloss.Color(codeblockSurface.Hex())
-
-	baseCodeBlock := lipgloss.NewStyle().Background(lgCodeblockSurface)
-
-	// TODO: use real colors instead of boilerplate. The commented stuff was a first iteration.
-	//
-	// titleStyle := baseTitleStyle.Foreground(lipgloss.AdaptiveColor{Dark: "#52901b", Light: "#72a443"})
-	// cmdStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#52901b", Light: "#72a443"})
-	// subCmdStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#bc7025", Light: "#bc702"})
-	// dimmedArgStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-	// codeblockStyle := theme.NoticeableSurfaceStyle.Width(width()-2).Padding(1, 2).Margin(0, 1)
-	// highlightedArgStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#5b6ce9", Light: "#838ee2"})
-
-	return HelpTheme{
-		BaseTitle:  lipgloss.NewStyle().Foreground(lipgloss.Color("#508000")),
-		ErrorTitle: lipgloss.NewStyle().Background(lipgloss.Red).Foreground(lightDark(lipgloss.BrightWhite, lipgloss.Black)),
-
-		Command:    lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000")),
-		SubCommand: lipgloss.NewStyle().Foreground(lipgloss.Color("#FFFF00")),
-		DimmedArg:  lipgloss.NewStyle().Foreground(lipgloss.Color("#808080")),
-		Flag:       lipgloss.NewStyle().Foreground(lipgloss.Color("#508000")),
-
-		Codeblock:           baseCodeBlock.Padding(1, 2).Margin(0, 1),
-		CodeblockBase:       baseCodeBlock.Foreground(lipgloss.Color(codeblockForeground.Hex())),
-		CodeblockCommand:    baseCodeBlock.Foreground(lipgloss.Color("#FF0000")),
-		CodeblockSubCommand: baseCodeBlock.Foreground(lipgloss.Color("#AFAF00")),
-		CodeblockDimmedArg:  baseCodeBlock.Foreground(lipgloss.Color("#808080")),
-		CodeblockFlag:       baseCodeBlock.Foreground(lipgloss.Color("#508000")),
-	}
+	return fmt.Sprintf("#%02x%02x%02x", r, g, b)
 }

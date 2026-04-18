@@ -1,7 +1,6 @@
 package listviewport
 
 import (
-	"image/color"
 	"strings"
 
 	"charm.land/lipgloss/v2"
@@ -23,11 +22,11 @@ type SeparatorModel struct {
 	width        int
 }
 
-func NewSeparator(width int, color color.Color, variant SeparatorVariant) *SeparatorModel {
+func NewSeparator(width int, style lipgloss.Style, variant SeparatorVariant) *SeparatorModel {
 	return &SeparatorModel{
 		id:           uuid.NewString(),
 		variant:      variant,
-		currentStyle: lipgloss.NewStyle().Foreground(color).AlignHorizontal(lipgloss.Center).Width(width),
+		currentStyle: style.AlignHorizontal(lipgloss.Center).Width(width),
 		width:        width,
 	}
 }

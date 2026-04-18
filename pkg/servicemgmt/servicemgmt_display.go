@@ -148,7 +148,7 @@ func (m *ifaceModel) initializeServiceList() {
 		m.serviceBricks[idx] = brick
 		panelItems = append(panelItems, brick)
 		if idx < len(serviceList)-1 {
-			panelItems = append(panelItems, listviewport.NewSeparator(m.width, m.theme.SeparatorColor, listviewport.SEPARATOR_DECORATED))
+			panelItems = append(panelItems, listviewport.NewSeparator(m.width, m.theme.Separator, listviewport.SEPARATOR_DECORATED))
 		}
 
 		idx++

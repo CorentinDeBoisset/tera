@@ -176,7 +176,8 @@ func RenderUsage(cmd *cobra.Command) error {
 	cmd.InitDefaultHelpFlag()
 	cmd.InitDefaultVersionFlag()
 
-	theme := LoadHelpTheme()
+	bgColor := BackgroundColor()
+	theme := LoadHelpTheme(bgColor)
 
 	output := &colorprofile.Writer{
 		Forward: cmd.OutOrStderr(),

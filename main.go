@@ -91,7 +91,8 @@ func init() {
 
 func main() {
 	if err := rootCmd.Execute(); err != nil {
-		iface.RenderError(err, iface.LoadHelpTheme())
+		bgColor := iface.BackgroundColor() // TODO: use bubbletea to get the background color
+		iface.RenderError(err, iface.LoadHelpTheme(bgColor))
 		os.Exit(1)
 	}
 }

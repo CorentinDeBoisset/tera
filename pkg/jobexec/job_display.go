@@ -308,7 +308,9 @@ func (m ifaceModel) View() tea.View {
 
 	view := tea.NewView(lipgloss.JoinHorizontal(lipgloss.Top, views...) + "\n\n" + help)
 	view.AltScreen = true
-	view.KeyboardEnhancements.ReportEventTypes = true
+
+	// These are buggy, waiting for https://github.com/charmbracelet/bubbletea/issues/1623
+	// view.KeyboardEnhancements.ReportEventTypes = true
 	view.MouseMode = tea.MouseModeCellMotion
 
 	return view

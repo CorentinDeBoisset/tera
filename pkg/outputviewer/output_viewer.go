@@ -75,6 +75,7 @@ type Model struct {
 	searchRegexp      *regexp.Regexp
 	showSearch        bool
 	searchHasFocus    bool
+	searchResult      string
 	searchResultLines []int
 	highlightedMatch  int
 }
@@ -92,8 +93,9 @@ func New(width, height int, theme iface.Theme, buffer *cmdrunr.SafeBuffer) (m Mo
 		displayedContent: nil,
 		offset:           0,
 
-		searchBar:         &SearchBarModel{},
+		searchBar:         NewSearchBar(width),
 		showSearch:        false,
+		searchResult:      "",
 		searchResultLines: nil,
 		highlightedMatch:  -1,
 	}
@@ -160,6 +162,7 @@ func (m *Model) recomputeDisplayedContent() {
 	if m.rawOutput == nil {
 		m.searchResultLines = nil
 		m.displayedContent = nil
+		m.updateSearchResult()
 		return
 	}
 
@@ -192,6 +195,8 @@ func (m *Model) recomputeDisplayedContent() {
 		m.searchResultLines = nil
 		m.displayedContent = strings.Split(widthStyle.Render(string(m.rawOutput.Content)), "\n")
 	}
+
+	m.updateSearchResult()
 
 	if wasAtBottom || m.offset > m.maxOffset() {
 		m.GoToBottom()
@@ -371,12 +376,25 @@ func (m *Model) clearSearchResults() {
 	m.searchRegexp = nil
 	m.searchResultLines = nil
 	m.highlightedMatch = -1
+	m.updateSearchResult()
 }
 
 func (m *Model) clearSearch() {
 	m.searchBar.Clear()
 	m.clearSearchResults()
 	m.setSearchVisibility(false)
+}
+
+func (m *Model) updateSearchResult() {
+	if m.searchRegexp != nil {
+		m.searchResult = fmt.Sprintf("%d / %d", m.highlightedMatch+1, len(m.searchResultLines))
+
+		// the minus one is to account for the inner border
+		m.searchBar.Resize(m.InnerFrameWidth() - len(m.searchResult) - m.frameStyle.GetHorizontalPadding() - 1)
+	} else {
+		m.searchResult = ""
+		m.searchBar.Resize(m.InnerFrameWidth())
+	}
 }
 
 func (m *Model) View() string {
@@ -413,15 +431,14 @@ func (m *Model) View() string {
 
 	var searchBlock string
 	if m.searchRegexp != nil {
-		resultBlock := fmt.Sprintf("%d / %d", m.highlightedMatch+1, len(m.searchResultLines))
-		searchBlockContent := m.searchBar.View(contentWidth - len(resultBlock) - m.frameStyle.GetHorizontalPadding() - 1) // the one is to account for the inner border
+		searchBlockContent := m.searchBar.View()
 		searchBlock = lipgloss.JoinHorizontal(
 			lipgloss.Left,
 			m.frameStyle.Border(LeftBottomBlockBorder, true).Render(searchBlockContent),
-			m.frameStyle.Border(RightBottomBlockBorder, true, true, true, false).Render(resultBlock),
+			m.frameStyle.Border(RightBottomBlockBorder, true, true, true, false).Render(m.searchResult),
 		)
 	} else {
-		searchBlock = m.frameStyle.Border(BottomBlockBorder, true).Render(m.searchBar.View(contentWidth))
+		searchBlock = m.frameStyle.Border(BottomBlockBorder, true).Render(m.searchBar.View())
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Left, contentBlock, searchBlock)

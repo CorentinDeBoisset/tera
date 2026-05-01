@@ -83,10 +83,9 @@ func (s *ServiceBrickModel) refreshStyles() {
 
 	s.offStatusStyle = brickStyle
 
-	// FIXME: use real colors instead of ugly boilerplate
-	s.startingStatusStyle = brickStyle.Foreground(lipgloss.Color("#d3a825"))
-	s.runningStatusStyle = brickStyle.Foreground(lipgloss.Color("#1eaa25"))
-	s.errorStatusStyle = brickStyle.Foreground(lipgloss.Color("#d82525"))
+	s.startingStatusStyle = brickStyle.Foreground(s.theme.WarningTextColor)
+	s.runningStatusStyle = brickStyle.Foreground(s.theme.SuccessTextColor)
+	s.errorStatusStyle = brickStyle.Foreground(s.theme.ErrorTextColor)
 }
 
 func (s *ServiceBrickModel) refreshCachedHeight() {

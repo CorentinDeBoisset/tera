@@ -36,6 +36,10 @@ type Theme struct {
 
 	FocusedOutputBorder   lipgloss.Style
 	UnfocusedOutputBorder lipgloss.Style
+
+	SuccessTextColor color.Color
+	WarningTextColor color.Color
+	ErrorTextColor   color.Color
 }
 
 // Theme used to display the usage and help insructions
@@ -110,16 +114,45 @@ func LoadTheme(background color.Color) Theme {
 	var bodyColorOnNoticeable, bodyColorOnUnfocusedHighlight, bodyColorOnHighlight ColorHsl
 	var bodyColorOnInvertedUnfocusedHighlight, bodyColorOnInvertedHighlight ColorHsl
 	var separatorCol, focusedOutputBorderColor ColorHsl
+	var successTextCol, warningTextCol, errorTextCol ColorHsl
 
-	if bgColor.L < 0.22 {
-		noticeableSurfaceColor = ColorHsl{bgColor.H, bgColor.S, 0.15 + 0.2*bgColor.L}.Clamped()
-		bodyColorOnNoticeable = ColorHsl{43, 0.58, 0.8 + 0.2*bgColor.L}.Clamped()
+	/*
+		The color theme is heavily dependent on the lightness of the background.
 
-		unfocusedHighlightSurfaceColor = ColorHsl{92, 0.20, 0.14 + 0.15*bgColor.L}.Clamped()
-		bodyColorOnUnfocusedHighlight = ColorHsl{43, 0.58, 0.75}
+		The calculations are not the same for all ranges of lightness, to always have a coherent color palette.
+		Thoses ranges are:
+			* L in [0 ; 0.2]    -> the surfaces will be lighter, and the text will be light
+			* L in ]0.2 ; 0.5]  -> the surfaces will be darker, and the text will be light
+			* L in ]0.5 ; 0.75] -> the surfaces will be lighter, and the text will be dark
+			* L in ]0.75 ; 1]   -> the surfaces will be darker, and the text will be light
+	*/
 
-		highlightSurfaceColor = ColorHsl{92, 0.37, 0.15 + 0.3*bgColor.L}.Clamped()
-		bodyColorOnHighlight = ColorHsl{43, 1.0, 0.95}
+	brickHue := 92.
+	if bgColor.H >= 65 && bgColor.H < 190 {
+		// For all green background, we use blue bricks rather than green-on-green
+		brickHue = 211
+	}
+
+	borderHue := 26.
+	if bgColor.H >= 5 && bgColor.H < 52 {
+		// For orange backgrounds, the border hue is a blue instead
+		borderHue = 198
+	}
+
+	body_hue := 43.
+
+	if bgColor.L <= 0.2 {
+		// Lighter surfaces, light text
+		lScale := bgColor.L / 0.2
+
+		noticeableSurfaceColor = ColorHsl{bgColor.H, bgColor.S, 0.15 + 0.1*lScale}.Clamped()
+		bodyColorOnNoticeable = ColorHsl{body_hue, 0.58, 0.8 + 0.15*lScale}.Clamped()
+
+		unfocusedHighlightSurfaceColor = ColorHsl{brickHue, 0.35, 0.10 + 0.08*lScale}.Clamped()
+		bodyColorOnUnfocusedHighlight = ColorHsl{body_hue, 0.58, 0.8 + 0.15*lScale}.Clamped()
+
+		highlightSurfaceColor = ColorHsl{brickHue, 0.42, 0.18 + 0.04*lScale}.Clamped()
+		bodyColorOnHighlight = ColorHsl{body_hue, 1.0, 0.95}
 
 		invertedUnfocusedHighlightSurfaceColor = ColorHsl{26.7, 0.65, 0.55}
 		bodyColorOnInvertedUnfocusedHighlight = ColorHsl{0, 0, 0.07}
@@ -128,25 +161,86 @@ func LoadTheme(background color.Color) Theme {
 		bodyColorOnInvertedHighlight = ColorHsl{0, 0, 0.1}
 
 		separatorCol = ColorHsl{0, 0, 0.4}
-		focusedOutputBorderColor = ColorHsl{26, 0.87, 0.55}
-	} else {
-		noticeableSurfaceColor = ColorHsl{bgColor.H, 0.05 + 0.4*bgColor.S, 0.95 * bgColor.L}.Clamped()
-		bodyColorOnNoticeable = ColorHsl{43, 0.58, 0.15 * bgColor.L}.Clamped()
+		focusedOutputBorderColor = ColorHsl{borderHue, 0.87, 0.55}
 
-		unfocusedHighlightSurfaceColor = ColorHsl{92, 0.27, 0.85 * bgColor.L}.Clamped()
-		bodyColorOnUnfocusedHighlight = ColorHsl{0, 0, 0.1}
+		successTextCol = ColorHsl{66.7, 61, 0.5 + 0.1*lScale}.Clamped()
+		warningTextCol = ColorHsl{47, 87, 0.5 + 0.1*lScale}.Clamped()
+		errorTextCol = ColorHsl{11, 92, 0.65 + 0.06*lScale}.Clamped()
+	} else if bgColor.L < 0.5 {
+		// Darker surfaces, light text
+		lScale := (bgColor.L - 0.2) / 0.3
 
-		highlightSurfaceColor = ColorHsl{92, 0.27, 0.55}
-		bodyColorOnHighlight = ColorHsl{43, 0.58, 0.1}
+		noticeableSurfaceColor = ColorHsl{bgColor.H, bgColor.S, 0.17 + 0.2*lScale}.Clamped()
+		bodyColorOnNoticeable = ColorHsl{body_hue, 0.58, 0.8 + 0.15*lScale}.Clamped()
 
-		invertedUnfocusedHighlightSurfaceColor = ColorHsl{26, 0.87, 0.6 + 0.2*bgColor.L}.Clamped()
+		unfocusedHighlightSurfaceColor = ColorHsl{brickHue, 0.28, 0.14 + 0.04*lScale}.Clamped()
+		bodyColorOnUnfocusedHighlight = ColorHsl{body_hue, 0.58, 0.8 + 0.15*lScale}.Clamped()
+
+		highlightSurfaceColor = ColorHsl{brickHue, 0.42, 0.18 + 0.04*lScale}.Clamped()
+		bodyColorOnHighlight = ColorHsl{body_hue, 1.0, 0.95}
+
+		invertedUnfocusedHighlightSurfaceColor = ColorHsl{26.7, 0.65, 0.55}
+		bodyColorOnInvertedUnfocusedHighlight = ColorHsl{0, 0, 0.07}
+
+		invertedHighlightSurfaceColor = ColorHsl{26.7, 0.95, 0.95}
+		bodyColorOnInvertedHighlight = ColorHsl{0, 0, 0.1}
+
+		separatorCol = ColorHsl{0, 0, 0.4}
+		focusedOutputBorderColor = ColorHsl{borderHue, 0.87, 0.72}
+
+		successTextCol = ColorHsl{66.7, 73, 0.6 + 0.1*lScale}.Clamped()
+		warningTextCol = ColorHsl{47, 87, 0.6 + 0.1*lScale}.Clamped()
+		errorTextCol = ColorHsl{11, 92, 0.71 + 0.06*lScale}.Clamped()
+	} else if bgColor.L < 0.75 {
+		// Lighter surfaces, dark text
+		lScale := (bgColor.L - 0.5) / 0.25
+
+		noticeableSurfaceColor = ColorHsl{bgColor.H, bgColor.S, 0.6 + 0.2*lScale}.Clamped()
+		bodyColorOnNoticeable = ColorHsl{body_hue, 0.58, 0.07 + 0.08*lScale}.Clamped()
+
+		unfocusedHighlightSurfaceColor = ColorHsl{brickHue, 0.25, 0.5 + 0.25*bgColor.L}.Clamped()
+		bodyColorOnUnfocusedHighlight = ColorHsl{body_hue, 0.58, 0.07 + 0.08*lScale}.Clamped()
+
+		highlightSurfaceColor = ColorHsl{brickHue, 0.48, 0.55 + 0.25*lScale}.Clamped()
+		bodyColorOnHighlight = ColorHsl{body_hue, 0.58, 0.1}
+
+		invertedUnfocusedHighlightSurfaceColor = ColorHsl{26, 0.87, 0.6 + 0.1*lScale}.Clamped()
 		bodyColorOnInvertedUnfocusedHighlight = ColorHsl{0, 0, 0.1}
 
-		invertedHighlightSurfaceColor = ColorHsl{26, 0.9, 0.15 + 0.05*bgColor.L}.Clamped()
+		invertedHighlightSurfaceColor = ColorHsl{26, 0.9, 0.17 + 0.05*lScale}.Clamped()
 		bodyColorOnInvertedHighlight = ColorHsl{0, 0, 0.95}
 
 		separatorCol = ColorHsl{0, 0, 0.15}
-		focusedOutputBorderColor = ColorHsl{26, 0.87, 0.67}
+		focusedOutputBorderColor = ColorHsl{borderHue, 0.87, 0.30}
+
+		successTextCol = ColorHsl{66.7, 85, 0.1 + 0.02*lScale}.Clamped()
+		warningTextCol = ColorHsl{47, 87, 0.15 + 0.1*lScale}.Clamped()
+		errorTextCol = ColorHsl{11, 92, 0.27 + 0.05*lScale}.Clamped()
+	} else {
+		// Darker surfaces, light text
+		lScale := (bgColor.L - 0.75) / 0.25
+
+		noticeableSurfaceColor = ColorHsl{bgColor.H, 0.05 + 0.8*bgColor.S, 0.65 + 0.3*lScale}.Clamped()
+		bodyColorOnNoticeable = ColorHsl{body_hue, 0.58, 0.07 + 0.08*lScale}.Clamped()
+
+		unfocusedHighlightSurfaceColor = ColorHsl{brickHue, 0.2, 0.75 + 0.1*lScale}.Clamped()
+		bodyColorOnUnfocusedHighlight = ColorHsl{body_hue, 0.58, 0.07 + 0.08*lScale}.Clamped()
+
+		highlightSurfaceColor = ColorHsl{brickHue, 0.27, 0.65 + 0.1*lScale}.Clamped()
+		bodyColorOnHighlight = ColorHsl{body_hue, 0.58, 0.1}
+
+		invertedUnfocusedHighlightSurfaceColor = ColorHsl{26, 0.87, 0.6 + 0.1*lScale}.Clamped()
+		bodyColorOnInvertedUnfocusedHighlight = ColorHsl{0, 0, 0.1}
+
+		invertedHighlightSurfaceColor = ColorHsl{26, 0.9, 0.17 + 0.05*lScale}.Clamped()
+		bodyColorOnInvertedHighlight = ColorHsl{0, 0, 0.95}
+
+		separatorCol = ColorHsl{0, 0, 0.15}
+		focusedOutputBorderColor = ColorHsl{borderHue, 0.87, 0.45}
+
+		successTextCol = ColorHsl{66.7, 85, 0.12 + 0.05*lScale}.Clamped()
+		warningTextCol = ColorHsl{47, 87, 0.25 + 0.05*lScale}.Clamped()
+		errorTextCol = ColorHsl{11, 92, 0.32 + 0.05*lScale}.Clamped()
 	}
 
 	// Convert them all to lipgloss colors
@@ -194,5 +288,9 @@ func LoadTheme(background color.Color) Theme {
 		Separator:             lipgloss.NewStyle().BorderForeground(lipgloss.Color(separatorCol.Hex())),
 		FocusedOutputBorder:   lipgloss.NewStyle().BorderForeground(lipgloss.Color(focusedOutputBorderColor.Hex())),
 		UnfocusedOutputBorder: lipgloss.NewStyle().BorderForeground(lipgloss.Color("#808080")),
+
+		SuccessTextColor: lipgloss.Color(successTextCol.Hex()),
+		WarningTextColor: lipgloss.Color(warningTextCol.Hex()),
+		ErrorTextColor:   lipgloss.Color(errorTextCol.Hex()),
 	}
 }

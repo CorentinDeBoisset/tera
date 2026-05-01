@@ -208,8 +208,8 @@ func (m *Model) View() string {
 		}
 	}
 
-	enoughContentBefore := len(beforeFocusContent) >= (availableHeight)/2
-	enoughContentAfter := len(afterFocusContent) >= (availableHeight)/2
+	enoughContentBefore := len(beforeFocusContent) >= availableHeight/2
+	enoughContentAfter := len(afterFocusContent) >= (availableHeight - availableHeight/2) // We use (height - height/2) to avoid off-by-one errors
 	linesBefore := 0
 	linesAfter := 0
 	if enoughContentAfter && enoughContentBefore {

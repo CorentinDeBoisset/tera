@@ -59,7 +59,7 @@ var messageKeyToIndex = map[string]int{
 	"No job and no service is declared in the configuration": 28,
 	"No name is declared":                                    24,
 	"No step is declared in the job \"%s\"":                  15,
-	"Path to a configuration file. If left empty, it will recursively search in the parent directories for a tera.yml file": 7,
+	"Path to a configuration file. If left empty, it will recursively search in the parent directories for a .tera.yml file": 7,
 	"Print version and exit":                                                    4,
 	"Run a job":                                                                 6,
 	"Start the service management interface":                                    8,
@@ -93,86 +93,86 @@ var enIndex = []uint32{ // 49 elements
 	// Entry 0 - 1F
 	0x00000000, 0x0000001c, 0x0000004f, 0x0000007a,
 	0x00000096, 0x000000ad, 0x000000c5, 0x000000cf,
-	0x00000145, 0x0000016c, 0x000001a1, 0x000001d8,
-	0x000001f8, 0x0000022c, 0x00000251, 0x00000279,
-	0x000002a0, 0x000002d8, 0x00000312, 0x0000035a,
-	0x000003a1, 0x000003da, 0x00000427, 0x00000471,
-	0x000004ba, 0x000004ce, 0x000004f6, 0x0000051d,
-	0x00000534, 0x0000056b, 0x0000058f, 0x000005b5,
+	0x00000146, 0x0000016d, 0x000001a2, 0x000001d9,
+	0x000001f9, 0x0000022d, 0x00000252, 0x0000027a,
+	0x000002a1, 0x000002d9, 0x00000313, 0x0000035b,
+	0x000003a2, 0x000003db, 0x00000428, 0x00000472,
+	0x000004bb, 0x000004cf, 0x000004f7, 0x0000051e,
+	0x00000535, 0x0000056c, 0x00000590, 0x000005b6,
 	// Entry 20 - 3F
-	0x000005d9, 0x000005ff, 0x0000062d, 0x00000651,
-	0x0000068b, 0x00000691, 0x0000069b, 0x000006a5,
-	0x000006ac, 0x000006c1, 0x000006d6, 0x000006eb,
-	0x000006f1, 0x000006f9, 0x00000701, 0x0000070a,
-	0x0000071b,
+	0x000005da, 0x00000600, 0x0000062e, 0x00000652,
+	0x0000068c, 0x00000692, 0x0000069c, 0x000006a6,
+	0x000006ad, 0x000006c2, 0x000006d7, 0x000006ec,
+	0x000006f2, 0x000006fa, 0x00000702, 0x0000070b,
+	0x0000071c,
 } // Size: 220 bytes
 
-const enData string = "" + // Size: 1819 bytes
+const enData string = "" + // Size: 1820 bytes
 	"\x02unknown (built from source)\x02Boost your development workflow by at" +
 	" least 10^12.\x02Display help information about the command\x02Display v" +
 	"ersion information\x02Print version and exit\x04\x00\x01\x0a\x13\x02tera" +
 	" version %[1]s\x02Run a job\x02Path to a configuration file. If left emp" +
-	"ty, it will recursively search in the parent directories for a tera.yml " +
-	"file\x02Start the service management interface\x02An error occured calcu" +
-	"lating an absolute path: %[1]s\x02An error occured when checking the pat" +
-	"h \x22%[1]s\x22:\x0a%[2]s\x02The path \x22%[1]s\x22 is a directory\x02Fa" +
-	"iled to read the current working directory: %[1]s\x02No configuration fi" +
-	"le could be found\x02The task #%[1]d has no command declared\x02No step " +
-	"is declared in the job \x22%[1]s\x22\x02The step #%[1]d in the job \x22%" +
-	"[2]s\x22 has no name declared\x02There are multiple steps named \x22%[1]" +
-	"s\x22 in the job \x22%[2]s\x22\x02The step \x22%[1]s\x22 in the job \x22" +
-	"%[2]s\x22 has invalid run_before hooks: %[3]s\x02The step \x22%[1]s\x22 " +
-	"in the job \x22%[2]s\x22 has invalid run_after hooks: %[3]s\x02The step " +
-	"\x22%[1]s\x22 in the job \x22%[2]s\x22 has no task declared\x02There are" +
-	" multiple tasks named \x22%[1]s\x22 in the step \x22%[2]s\x22in the job " +
-	"\x22%[3]s\x22\x02The task \x22%[1]s\x22 in the step \x22%[2]s\x22 in the" +
-	" job \x22%[3]s\x22 is invalid: %[4]s\x02The task #%[1]d in the step \x22" +
-	"%[2]s\x22 in the job \x22%[3]s\x22 is invalid: %[4]s\x02No name is decla" +
-	"red\x02The run_before hooks are invalid: %[1]s\x02The run_after hooks ar" +
-	"e invalid: %[1]s\x02No command is declared\x02No job and no service is d" +
-	"eclared in the configuration\x02The job #%[1]d has no name declared\x02T" +
-	"here are multiple jobs named \x22%[1]s\x22\x02The key of a service is no" +
-	"t defined\x02The service \x22%[1]s\x22 is invalid: %[2]s\x02The file cou" +
-	"ld not be parsed from YAML: %[1]s\x02The configuration is invalid: %[1]s" +
-	"\x02The contents of the file \x22%[1]s\x22 could not be read: %[2]s\x02E" +
-	"RROR\x02[command]\x02[--flags]\x02%[1]s:\x02Additional Commands:\x04\x01" +
-	" \x00\x10\x02(default %[1]s)\x04\x01 \x00\x10\x02(default %[1]q)\x02USAG" +
-	"E\x02ALIASES\x02EXAMPLE\x02COMMANDS\x02ADDITIONNAL HELP"
+	"ty, it will recursively search in the parent directories for a .tera.yml" +
+	" file\x02Start the service management interface\x02An error occured calc" +
+	"ulating an absolute path: %[1]s\x02An error occured when checking the pa" +
+	"th \x22%[1]s\x22:\x0a%[2]s\x02The path \x22%[1]s\x22 is a directory\x02F" +
+	"ailed to read the current working directory: %[1]s\x02No configuration f" +
+	"ile could be found\x02The task #%[1]d has no command declared\x02No step" +
+	" is declared in the job \x22%[1]s\x22\x02The step #%[1]d in the job \x22" +
+	"%[2]s\x22 has no name declared\x02There are multiple steps named \x22%[1" +
+	"]s\x22 in the job \x22%[2]s\x22\x02The step \x22%[1]s\x22 in the job " +
+	"\x22%[2]s\x22 has invalid run_before hooks: %[3]s\x02The step \x22%[1]s" +
+	"\x22 in the job \x22%[2]s\x22 has invalid run_after hooks: %[3]s\x02The " +
+	"step \x22%[1]s\x22 in the job \x22%[2]s\x22 has no task declared\x02Ther" +
+	"e are multiple tasks named \x22%[1]s\x22 in the step \x22%[2]s\x22in the" +
+	" job \x22%[3]s\x22\x02The task \x22%[1]s\x22 in the step \x22%[2]s\x22 i" +
+	"n the job \x22%[3]s\x22 is invalid: %[4]s\x02The task #%[1]d in the step" +
+	" \x22%[2]s\x22 in the job \x22%[3]s\x22 is invalid: %[4]s\x02No name is " +
+	"declared\x02The run_before hooks are invalid: %[1]s\x02The run_after hoo" +
+	"ks are invalid: %[1]s\x02No command is declared\x02No job and no service" +
+	" is declared in the configuration\x02The job #%[1]d has no name declared" +
+	"\x02There are multiple jobs named \x22%[1]s\x22\x02The key of a service " +
+	"is not defined\x02The service \x22%[1]s\x22 is invalid: %[2]s\x02The fil" +
+	"e could not be parsed from YAML: %[1]s\x02The configuration is invalid: " +
+	"%[1]s\x02The contents of the file \x22%[1]s\x22 could not be read: %[2]s" +
+	"\x02ERROR\x02[command]\x02[--flags]\x02%[1]s:\x02Additional Commands:" +
+	"\x04\x01 \x00\x10\x02(default %[1]s)\x04\x01 \x00\x10\x02(default %[1]q)" +
+	"\x02USAGE\x02ALIASES\x02EXAMPLE\x02COMMANDS\x02ADDITIONNAL HELP"
 
 var frIndex = []uint32{ // 49 elements
 	// Entry 0 - 1F
 	0x00000000, 0x0000002a, 0x00000072, 0x000000a9,
 	0x000000cb, 0x000000ea, 0x00000102, 0x00000125,
-	0x000001bf, 0x000001e9, 0x00000231, 0x00000280,
-	0x000002a9, 0x000002e5, 0x00000319, 0x0000033e,
-	0x0000036d, 0x0000039a, 0x000003d1, 0x0000041b,
-	0x0000045f, 0x00000498, 0x000004e1, 0x0000052c,
-	0x00000576, 0x00000590, 0x000005b8, 0x000005df,
-	0x00000600, 0x0000063b, 0x00000658, 0x0000067a,
+	0x000001c0, 0x000001ea, 0x00000232, 0x00000281,
+	0x000002aa, 0x000002e6, 0x0000031a, 0x0000033f,
+	0x0000036e, 0x0000039b, 0x000003d2, 0x0000041c,
+	0x00000460, 0x00000499, 0x000004e2, 0x0000052d,
+	0x00000577, 0x00000591, 0x000005b9, 0x000005e0,
+	0x00000601, 0x0000063c, 0x00000659, 0x0000067b,
 	// Entry 20 - 3F
-	0x00000695, 0x000006bd, 0x000006e9, 0x00000713,
-	0x0000074d, 0x00000754, 0x0000075f, 0x0000076b,
-	0x00000773, 0x00000785, 0x0000079e, 0x000007b7,
-	0x000007bd, 0x000007c3, 0x000007cb, 0x000007d5,
-	0x000007ea,
+	0x00000696, 0x000006be, 0x000006ea, 0x00000714,
+	0x0000074e, 0x00000755, 0x00000760, 0x0000076c,
+	0x00000774, 0x00000786, 0x0000079f, 0x000007b8,
+	0x000007be, 0x000007c4, 0x000007cc, 0x000007d6,
+	0x000007eb,
 } // Size: 220 bytes
 
-const frData string = "" + // Size: 2026 bytes
+const frData string = "" + // Size: 2027 bytes
 	"\x02inconnue (compilation depuis les sources)\x02Démultipliez votre envi" +
 	"ronnement de développement par au moins 10^12.\x02Afficher l'information" +
 	" d'aide à propos de la commande\x02Afficher l'information de version\x02" +
 	"Afficher la version et quitter\x04\x00\x01\x0a\x13\x02tera version %[1]s" +
 	"\x02Exécuter une séquence de tâches\x02Chemin vers un fichier de configu" +
 	"ration. Si aucune valeur n'est saisie, une recherche dans les dossiers p" +
-	"arents pour un fichier tera.yml sera exécutée.\x02Lancer l'interface de " +
-	"gestion de services\x02Une erreur est survenue à la récupération d'un ch" +
-	"emin absolu : %[1]s\x02Une erreur est survenue en listant les propriétés" +
-	" du fichier \x22%[1]s\x22 :\x0a%[2]s\x02Le chemin \x22%[1]s\x22 pointe v" +
-	"ers un dossier\x02Impossible de lire le répertoire de travail actuel : %" +
-	"[1]s\x02Aucun fichier de configuration n'a pu être trouvé\x02La tâche #%" +
-	"[1]d n'a pas de commande\x02Aucun step n'est déclaré dans le job \x22%[1" +
-	"]s\x22\x02Le step #%[1]d du job \x22%[2]s\x22 n'a pas de nom\x02Plusieur" +
-	"s steps ont le nom \x22%[1]s\x22 dans le job \x22%[2]s\x22\x02Le step " +
+	"arents pour un fichier .tera.yml sera exécutée.\x02Lancer l'interface de" +
+	" gestion de services\x02Une erreur est survenue à la récupération d'un c" +
+	"hemin absolu : %[1]s\x02Une erreur est survenue en listant les propriété" +
+	"s du fichier \x22%[1]s\x22 :\x0a%[2]s\x02Le chemin \x22%[1]s\x22 pointe " +
+	"vers un dossier\x02Impossible de lire le répertoire de travail actuel : " +
+	"%[1]s\x02Aucun fichier de configuration n'a pu être trouvé\x02La tâche #" +
+	"%[1]d n'a pas de commande\x02Aucun step n'est déclaré dans le job \x22%[" +
+	"1]s\x22\x02Le step #%[1]d du job \x22%[2]s\x22 n'a pas de nom\x02Plusieu" +
+	"rs steps ont le nom \x22%[1]s\x22 dans le job \x22%[2]s\x22\x02Le step " +
 	"\x22%[1]s\x22 dans le job \x22%[2]s\x22 a un hook run_before invalide : " +
 	"%[3]s\x02Le step \x22%[1]s\x22 du job \x22%[2]s\x22 a un hook run_after " +
 	"invalide : %[3]s\x02Le step \x22%[1]s\x22 du job \x22%[2]s\x22 ne contie" +
@@ -192,4 +192,4 @@ const frData string = "" + // Size: 2026 bytes
 	"\x02(%[1]q par défaut)\x02USAGE\x02ALIAS\x02EXAMPLE\x02COMMANDES\x02AIDE" +
 	" SUPPLÉMENTAIRE"
 
-	// Total table size 4285 bytes (4KiB); checksum: 2C54AAEE
+	// Total table size 4287 bytes (4KiB); checksum: 12048AA9

@@ -67,7 +67,7 @@ func init() {
 			return jobexec.ExecuteJob(confPath, jobToRun)
 		},
 	}
-	runCmd.Flags().StringVarP(&confPath, "config", "c", "", i18n.Sprintf("Path to a configuration file. If left empty, it will recursively search in the parent directories for a tera.yml file"))
+	runCmd.Flags().StringVarP(&confPath, "config", "c", "", i18n.Sprintf("Path to a configuration file. If left empty, it will recursively search in the parent directories for a .tera.yml file"))
 	_ = runCmd.MarkFlagFilename("config", "yaml", "yml")
 
 	rootCmd.AddCommand(runCmd)
@@ -79,7 +79,7 @@ func init() {
 			return servicemgmt.StartServiceManagement(confPath)
 		},
 	}
-	serviceCmd.Flags().StringVarP(&confPath, "config", "c", "", i18n.Sprintf("Path to a configuration file. If left empty, it will recursively search in the parent directories for a tera.yml file"))
+	serviceCmd.Flags().StringVarP(&confPath, "config", "c", "", i18n.Sprintf("Path to a configuration file. If left empty, it will recursively search in the parent directories for a .tera.yml file"))
 	_ = serviceCmd.MarkFlagFilename("config", "yaml", "yml")
 
 	rootCmd.AddCommand(serviceCmd)

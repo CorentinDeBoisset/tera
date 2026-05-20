@@ -19,8 +19,8 @@ func GetJobList(confPath string) []string {
 	}
 
 	results := make([]string, 0, len(config.Jobs))
-	for _, job := range config.Jobs {
-		results = append(results, job.Name)
+	for jobId := range config.Jobs {
+		results = append(results, jobId)
 	}
 
 	return results
@@ -35,8 +35,8 @@ func ExecuteJob(confPath string, jobToRun string) error {
 	cfg.SetupLogs(config.LogFilePath)
 
 	var pickedJob *cfg.JobConfig
-	for _, job := range config.Jobs {
-		if (len(jobToRun) > 0 && job.Name == jobToRun) || job.Name == "default" {
+	for jobId, job := range config.Jobs {
+		if (len(jobToRun) > 0 && jobId == jobToRun) || jobId == "default" {
 			pickedJob = &job
 		}
 	}

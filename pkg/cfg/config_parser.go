@@ -1,6 +1,7 @@
 package cfg
 
 import (
+	"maps"
 	"os"
 	"path/filepath"
 
@@ -10,7 +11,7 @@ import (
 type ConfigFile struct {
 	BasePath    string                   `yaml:"-"`
 	LogFilePath string                   `yaml:"log_file"`
-	Jobs        []JobConfig              `yaml:"jobs,omitempty"`
+	Jobs        map[string]JobConfig     `yaml:"jobs,omitempty"`
 	Services    map[string]ServiceConfig `yaml:"services,omitempty"`
 }
 
@@ -37,7 +38,6 @@ type ServiceConfig struct {
 }
 
 type JobConfig struct {
-	Name     string       `yaml:"name"`
 	Steps    []StepConfig `yaml:"steps"`
 	RunAfter []CmdConfig  `yaml:"run_after,omitempty"`
 }
@@ -65,36 +65,50 @@ type CmdConfig struct {
 
 // findConfig tries to find a configuration file.
 // If no path is given in argument, it tries to find a .tera.yml file in the parent directories of the current working directory.
-func findConfig(givenPath string) (ret string, err error) {
+// If a .tera.yml file is found, it checks if it has a sibling .tera.extra.yml file to also import.
+func findConfig(givenPath string) (ret []string, err error) {
+	configs := make([]string, 0, 1)
 	if len(givenPath) > 0 {
-		if filepath.IsAbs(givenPath) {
-			ret = givenPath
+		var finalPath string
+		if !filepath.IsAbs(givenPath) {
+			finalPath = givenPath
 		} else {
-			ret, err = filepath.Abs(givenPath)
+			finalPath, err = filepath.Abs(givenPath)
 			if err != nil {
-				return "", newConfigError("An error occured calculating an absolute path: %s", err)
+				return nil, newConfigError("An error occured calculating an absolute path: %s", err)
 			}
 		}
 
-		stat, err := os.Stat(ret)
+		stat, err := os.Stat(finalPath)
 		if err != nil {
-			return "", newConfigError("An error occured when checking the path \"%s\":\n%s", ret, err)
+			return nil, newConfigError("An error occured when checking the path \"%s\":\n%s", finalPath, err)
 		}
 		if stat.IsDir() {
-			return "", newConfigError("The path \"%s\" is a directory", ret)
+			return nil, newConfigError("The path \"%s\" is a directory", finalPath)
 		}
 
-		return ret, nil
+		configs = append(configs, finalPath)
+
+		return configs, nil
 	}
 
 	curDir, err := os.Getwd()
 	if err != nil {
-		return "", newConfigError("Failed to read the current working directory: %s", err)
+		return nil, newConfigError("Failed to read the current working directory: %s", err)
 	}
 	for {
-		stat, err := os.Stat(filepath.Join(curDir, ".tera.yml"))
+		testedPath := filepath.Join(curDir, ".tera.yml")
+		stat, err := os.Stat(testedPath)
 		if err == nil && !stat.IsDir() {
-			return filepath.Join(curDir, ".tera.yml"), nil
+			configs = append(configs, testedPath)
+
+			// Check if the config file has an "extra" sibling
+			siblingPath := filepath.Join(curDir, ".tera.extra.yml")
+			if stat, err := os.Stat(siblingPath); err == nil && !stat.IsDir() {
+				configs = append(configs, siblingPath)
+			}
+
+			return configs, nil
 		}
 
 		if curDir == filepath.Dir(curDir) {
@@ -106,7 +120,33 @@ func findConfig(givenPath string) (ret string, err error) {
 		curDir = filepath.Dir(curDir)
 	}
 
-	return "", newConfigError("No configuration file could be found")
+	return nil, newConfigError("No configuration file could be found")
+}
+
+func mergeConfigs(base, extra *ConfigFile) *ConfigFile {
+	resultingConfig := &ConfigFile{}
+
+	// This should not be set from the yaml alone, but just in case we copy it anyway
+	if len(base.BasePath) > 0 {
+		resultingConfig.BasePath = base.BasePath
+	}
+
+	// for logFilePath, extra has precedence over base
+	if len(extra.LogFilePath) > 0 {
+		resultingConfig.LogFilePath = extra.LogFilePath
+	} else if len(base.LogFilePath) > 0 {
+		resultingConfig.LogFilePath = base.LogFilePath
+	}
+
+	resultingConfig.Jobs = make(map[string]JobConfig)
+	maps.Copy(resultingConfig.Jobs, base.Jobs)
+	maps.Copy(resultingConfig.Jobs, extra.Jobs)
+
+	resultingConfig.Services = make(map[string]ServiceConfig)
+	maps.Copy(resultingConfig.Services, base.Services)
+	maps.Copy(resultingConfig.Services, extra.Services)
+
+	return resultingConfig
 }
 
 func validateCommands(configs []CmdConfig) error {
@@ -119,47 +159,34 @@ func validateCommands(configs []CmdConfig) error {
 	return nil
 }
 
-func validateJobConfig(job *JobConfig) error {
+func validateJobConfig(jobId string, job *JobConfig) error {
 	if len(job.Steps) == 0 {
-		return newConfigError("No step is declared in the job \"%s\"", job.Name)
+		return newConfigError("No step is declared in the job \"%s\"", jobId)
 	}
 
-	stepNames := make(map[string]bool)
 	for stepIdx, step := range job.Steps {
 		if len(step.Name) == 0 {
-			return newConfigError("The step #%d in the job \"%s\" has no name declared", stepIdx, job.Name)
+			return newConfigError("The step #%d in the job \"%s\" has no name declared", stepIdx, jobId)
 		}
-
-		// Check all the step names are unique
-		if _, ok := stepNames[step.Name]; ok {
-			return newConfigError("There are multiple steps named \"%s\" in the job \"%s\"", step.Name, job.Name)
-		}
-		stepNames[step.Name] = true
 
 		// Check the hooks
 		if err := validateCommands(step.RunBefore); err != nil {
-			return newConfigError("The step \"%s\" in the job \"%s\" has invalid run_before hooks: %s", step.Name, job.Name, err)
+			return newConfigError("The step \"%s\" in the job \"%s\" has invalid run_before hooks: %s", step.Name, jobId, err)
 		}
 		if err := validateCommands(step.RunAfter); err != nil {
-			return newConfigError("The step \"%s\" in the job \"%s\" has invalid run_after hooks: %s", step.Name, job.Name, err)
+			return newConfigError("The step \"%s\" in the job \"%s\" has invalid run_after hooks: %s", step.Name, jobId, err)
 		}
 
-		// Check all the tasks. Check that within a step, the names are unique
-		taskNames := make(map[string]bool)
+		// Check all the tasks.
 		if len(step.Tasks) == 0 {
-			return newConfigError("The step \"%s\" in the job \"%s\" has no task declared", step.Name, job.Name)
+			return newConfigError("The step \"%s\" in the job \"%s\" has no task declared", step.Name, jobId)
 		}
 		for taskIdx, task := range step.Tasks {
-			if _, ok := taskNames[task.Name]; ok {
-				return newConfigError("There are multiple tasks named \"%s\" in the step \"%s\"in the job \"%s\"", task.Name, step.Name, job.Name)
-			}
-			taskNames[task.Name] = true
-
 			if err := validateTaskConfig(task); err != nil {
 				if len(task.Name) > 0 {
-					return newConfigError("The task \"%s\" in the step \"%s\" in the job \"%s\" is invalid: %s", task.Name, step.Name, job.Name, err)
+					return newConfigError("The task \"%s\" in the step \"%s\" in the job \"%s\" is invalid: %s", task.Name, step.Name, jobId, err)
 				}
-				return newConfigError("The task #%d in the step \"%s\" in the job \"%s\" is invalid: %s", taskIdx, step.Name, job.Name, err)
+				return newConfigError("The task #%d in the step \"%s\" in the job \"%s\" is invalid: %s", taskIdx, step.Name, jobId, err)
 			}
 		}
 	}
@@ -190,19 +217,8 @@ func validateConfig(cfg *ConfigFile) error {
 		return newConfigError("No job and no service is declared in the configuration")
 	}
 
-	jobNames := make(map[string]bool)
-	for jobIdx, job := range cfg.Jobs {
-		if len(job.Name) == 0 {
-			return newConfigError("The job #%d has no name declared", jobIdx)
-		}
-
-		// Check all the job names are unique
-		if _, exists := jobNames[job.Name]; exists {
-			return newConfigError("There are multiple jobs named \"%s\"", job.Name)
-		}
-		jobNames[job.Name] = true
-
-		if err := validateJobConfig(&job); err != nil {
+	for jobId, job := range cfg.Jobs {
+		if err := validateJobConfig(jobId, &job); err != nil {
 			return err
 		}
 	}
@@ -220,37 +236,52 @@ func validateConfig(cfg *ConfigFile) error {
 	return nil
 }
 
-// parseConfig reads the content of the file at the absolute path given in argument, and extracts its yaml content into a ConfigFile.
-func ParseConfig(fileContent []byte) (*ConfigFile, error) {
-	output := ConfigFile{}
-	if err := yaml.Unmarshal(fileContent, &output); err != nil {
-		return nil, newConfigError("The file could not be parsed from YAML: %s", err.Error())
+func ParseConfigs(fileContents [][]byte) (*ConfigFile, error) {
+	var resultingConfig *ConfigFile
+	for _, fileContent := range fileContents {
+		rawConfig := &ConfigFile{}
+		if err := yaml.Unmarshal(fileContent, rawConfig); err != nil {
+			return nil, newConfigError("The file could not be parsed from YAML: %s", err.Error())
+		}
+
+		if resultingConfig == nil {
+			resultingConfig = rawConfig
+		} else {
+			resultingConfig = mergeConfigs(resultingConfig, rawConfig)
+		}
 	}
 
-	if err := validateConfig(&output); err != nil {
+	if err := validateConfig(resultingConfig); err != nil {
 		return nil, newConfigError("The configuration is invalid: %s", err)
 	}
 
-	return &output, nil
+	return resultingConfig, nil
 }
 
 func FindAndParseConfig(givenPath string) (*ConfigFile, error) {
-	configPath, err := findConfig(givenPath)
+	configPaths, err := findConfig(givenPath)
+	if err != nil {
+		return nil, err
+	}
+	if len(configPaths) < 1 {
+		return nil, newConfigError("No valid configuration could be found")
+	}
+
+	configContents := make([][]byte, 0, len(configPaths))
+	for _, configPath := range configPaths {
+		fileContent, err := os.ReadFile(configPath)
+		if err != nil {
+			return nil, newConfigError("The contents of the file \"%s\" could not be read: %s", configPath, err)
+		}
+		configContents = append(configContents, fileContent)
+	}
+
+	config, err := ParseConfigs(configContents)
 	if err != nil {
 		return nil, err
 	}
 
-	fileContent, err := os.ReadFile(configPath)
-	if err != nil {
-		return nil, newConfigError("The contents of the file \"%s\" could not be read: %s", configPath, err)
-	}
-
-	config, err := ParseConfig(fileContent)
-	if err != nil {
-		return nil, err
-	}
-
-	config.BasePath = filepath.Dir(configPath)
+	config.BasePath = filepath.Dir(configPaths[0])
 
 	return config, nil
 }

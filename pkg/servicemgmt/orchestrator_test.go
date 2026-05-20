@@ -7,6 +7,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func parseConfigString(input string) (*cfg.ConfigFile, error) {
+	return cfg.ParseConfigs([][]byte{[]byte(input)})
+}
+
 func TestNewOrchestrator(t *testing.T) {
 
 	configText := `
@@ -27,7 +31,7 @@ services:
     name: Service C
     cmd: echo 'C'
 `
-	config, err := cfg.ParseConfig([]byte(configText))
+	config, err := parseConfigString(configText)
 	require.Nil(t, err)
 	orchestrator, err := NewOrchestrator(".", config.Services)
 	require.Nil(t, err)
@@ -49,7 +53,7 @@ services:
     dependencies:
       - target: serviceA
 `
-	config, err := cfg.ParseConfig([]byte(autodependencyError))
+	config, err := parseConfigString(autodependencyError)
 	require.Nil(t, err)
 	_, err = NewOrchestrator(".", config.Services)
 	require.ErrorContains(t, err, "the service \"serviceA\" cannot be dependent on itself")
@@ -62,7 +66,7 @@ services:
     dependencies:
       - target: zozo
 `
-	config, err = cfg.ParseConfig([]byte(invalidDependencyError))
+	config, err = parseConfigString(invalidDependencyError)
 	require.Nil(t, err)
 	_, err = NewOrchestrator(".", config.Services)
 	require.ErrorContains(t, err, "the dependency target \"zozo\" of the service \"serviceA\" does not exist")
@@ -80,7 +84,7 @@ services:
     name: Service B
     cmd: echo 'B'
 `
-	config, err = cfg.ParseConfig([]byte(doubleDependencyError))
+	config, err = parseConfigString(doubleDependencyError)
 	require.Nil(t, err)
 	_, err = NewOrchestrator(".", config.Services)
 	require.ErrorContains(t, err, "the service \"serviceA\" have two dependencies on \"serviceB\"")
@@ -105,7 +109,7 @@ services:
     dependencies:
       - target: serviceA
 `
-	config, err = cfg.ParseConfig([]byte(circularDependencyError))
+	config, err = parseConfigString(circularDependencyError)
 	require.Nil(t, err)
 	_, err = NewOrchestrator(".", config.Services)
 	require.ErrorContains(t, err, "a circular dependency have been detected between the services")

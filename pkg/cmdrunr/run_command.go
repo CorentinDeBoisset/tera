@@ -61,6 +61,11 @@ func RunCommand(ctx context.Context, basePath, path, cmd string, output *SafeBuf
 	task := exec.CommandContext(ctx, "/bin/sh", "-c", cmd)
 	task.Dir = getCmdPath(basePath, path)
 
+	if stat, err := os.Stat(task.Dir); err != nil || !stat.IsDir() {
+		_, _ = fmt.Fprintf(output, "\nThe directory to execute the command could not be found:\n%s", task.Dir)
+		return false
+	}
+
 	// Pass the environment to the child processes, and set the WIDTH/HEIGHT env variables
 	task.Env = append(os.Environ(), fmt.Sprintf("COLUMNS=%d", width), fmt.Sprintf("LINES=%d", height))
 	task.Stdout = output

@@ -39,75 +39,71 @@ func init() {
 }
 
 var messageKeyToIndex = map[string]int{
-	" (default %q)":        42,
-	" (default %s)":        41,
-	"%s:":                  39,
-	"ADDITIONNAL HELP":     47,
-	"ALIASES":              44,
-	"Additional Commands:": 40,
+	" (default %q)":        39,
+	" (default %s)":        38,
+	"%s:":                  36,
+	"ADDITIONNAL HELP":     44,
+	"ALIASES":              41,
+	"Additional Commands:": 37,
 	"An error occured calculating an absolute path: %s":   9,
 	"An error occured when checking the path \"%s\":\n%s": 10,
 	"Boost your development workflow by at least 10^12.":  1,
-	"COMMANDS": 46,
+	"COMMANDS": 43,
 	"Display help information about the command": 2,
 	"Display version information":                3,
-	"ERROR":                                      36,
-	"EXAMPLE":                                    45,
+	"ERROR":                                      33,
+	"EXAMPLE":                                    42,
 	"Failed to read the current working directory: %s":       12,
-	"No command is declared":                                 27,
+	"No command is declared":                                 25,
 	"No configuration file could be found":                   13,
-	"No job and no service is declared in the configuration": 28,
-	"No name is declared":                                    24,
+	"No job and no service is declared in the configuration": 26,
+	"No name is declared":                                    22,
 	"No step is declared in the job \"%s\"":                  15,
+	"No valid configuration could be found":                  31,
 	"Path to a configuration file. If left empty, it will recursively search in the parent directories for a .tera.yml file": 7,
-	"Print version and exit":                                                    4,
-	"Run a job":                                                                 6,
-	"Start the service management interface":                                    8,
-	"The configuration is invalid: %s":                                          34,
-	"The contents of the file \"%s\" could not be read: %s":                     35,
-	"The file could not be parsed from YAML: %s":                                33,
-	"The job #%d has no name declared":                                          29,
-	"The key of a service is not defined":                                       31,
-	"The path \"%s\" is a directory":                                            11,
-	"The run_after hooks are invalid: %s":                                       26,
-	"The run_before hooks are invalid: %s":                                      25,
-	"The service \"%s\" is invalid: %s":                                         32,
-	"The step \"%s\" in the job \"%s\" has invalid run_after hooks: %s":         19,
-	"The step \"%s\" in the job \"%s\" has invalid run_before hooks: %s":        18,
-	"The step \"%s\" in the job \"%s\" has no task declared":                    20,
-	"The step #%d in the job \"%s\" has no name declared":                       16,
-	"The task \"%s\" in the step \"%s\" in the job \"%s\" is invalid: %s":       22,
-	"The task #%d has no command declared":                                      14,
-	"The task #%d in the step \"%s\" in the job \"%s\" is invalid: %s":          23,
-	"There are multiple jobs named \"%s\"":                                      30,
-	"There are multiple steps named \"%s\" in the job \"%s\"":                   17,
-	"There are multiple tasks named \"%s\" in the step \"%s\"in the job \"%s\"": 21,
-	"USAGE":                       43,
-	"[--flags]":                   38,
-	"[command]":                   37,
+	"Print version and exit":                                              4,
+	"Run a job":                                                           6,
+	"Start the service management interface":                              8,
+	"The configuration is invalid: %s":                                    30,
+	"The contents of the file \"%s\" could not be read: %s":               32,
+	"The file could not be parsed from YAML: %s":                          29,
+	"The key of a service is not defined":                                 27,
+	"The path \"%s\" is a directory":                                      11,
+	"The run_after hooks are invalid: %s":                                 24,
+	"The run_before hooks are invalid: %s":                                23,
+	"The service \"%s\" is invalid: %s":                                   28,
+	"The step \"%s\" in the job \"%s\" has invalid run_after hooks: %s":   18,
+	"The step \"%s\" in the job \"%s\" has invalid run_before hooks: %s":  17,
+	"The step \"%s\" in the job \"%s\" has no task declared":              19,
+	"The step #%d in the job \"%s\" has no name declared":                 16,
+	"The task \"%s\" in the step \"%s\" in the job \"%s\" is invalid: %s": 20,
+	"The task #%d has no command declared":                                14,
+	"The task #%d in the step \"%s\" in the job \"%s\" is invalid: %s":    21,
+	"USAGE":                       40,
+	"[--flags]":                   35,
+	"[command]":                   34,
 	"tera version %s\n":           5,
 	"unknown (built from source)": 0,
 }
 
-var enIndex = []uint32{ // 49 elements
+var enIndex = []uint32{ // 46 elements
 	// Entry 0 - 1F
 	0x00000000, 0x0000001c, 0x0000004f, 0x0000007a,
 	0x00000096, 0x000000ad, 0x000000c5, 0x000000cf,
 	0x00000146, 0x0000016d, 0x000001a2, 0x000001d9,
 	0x000001f9, 0x0000022d, 0x00000252, 0x0000027a,
-	0x000002a1, 0x000002d9, 0x00000313, 0x0000035b,
-	0x000003a2, 0x000003db, 0x00000428, 0x00000472,
-	0x000004bb, 0x000004cf, 0x000004f7, 0x0000051e,
-	0x00000535, 0x0000056c, 0x00000590, 0x000005b6,
+	0x000002a1, 0x000002d9, 0x00000321, 0x00000368,
+	0x000003a1, 0x000003eb, 0x00000434, 0x00000448,
+	0x00000470, 0x00000497, 0x000004ae, 0x000004e5,
+	0x00000509, 0x0000052f, 0x0000055d, 0x00000581,
 	// Entry 20 - 3F
-	0x000005da, 0x00000600, 0x0000062e, 0x00000652,
-	0x0000068c, 0x00000692, 0x0000069c, 0x000006a6,
-	0x000006ad, 0x000006c2, 0x000006d7, 0x000006ec,
-	0x000006f2, 0x000006fa, 0x00000702, 0x0000070b,
-	0x0000071c,
-} // Size: 220 bytes
+	0x000005a7, 0x000005e1, 0x000005e7, 0x000005f1,
+	0x000005fb, 0x00000602, 0x00000617, 0x0000062c,
+	0x00000641, 0x00000647, 0x0000064f, 0x00000657,
+	0x00000660, 0x00000671,
+} // Size: 208 bytes
 
-const enData string = "" + // Size: 1820 bytes
+const enData string = "" + // Size: 1649 bytes
 	"\x02unknown (built from source)\x02Boost your development workflow by at" +
 	" least 10^12.\x02Display help information about the command\x02Display v" +
 	"ersion information\x02Print version and exit\x04\x00\x01\x0a\x13\x02tera" +
@@ -119,45 +115,41 @@ const enData string = "" + // Size: 1820 bytes
 	"ailed to read the current working directory: %[1]s\x02No configuration f" +
 	"ile could be found\x02The task #%[1]d has no command declared\x02No step" +
 	" is declared in the job \x22%[1]s\x22\x02The step #%[1]d in the job \x22" +
-	"%[2]s\x22 has no name declared\x02There are multiple steps named \x22%[1" +
-	"]s\x22 in the job \x22%[2]s\x22\x02The step \x22%[1]s\x22 in the job " +
-	"\x22%[2]s\x22 has invalid run_before hooks: %[3]s\x02The step \x22%[1]s" +
-	"\x22 in the job \x22%[2]s\x22 has invalid run_after hooks: %[3]s\x02The " +
-	"step \x22%[1]s\x22 in the job \x22%[2]s\x22 has no task declared\x02Ther" +
-	"e are multiple tasks named \x22%[1]s\x22 in the step \x22%[2]s\x22in the" +
-	" job \x22%[3]s\x22\x02The task \x22%[1]s\x22 in the step \x22%[2]s\x22 i" +
-	"n the job \x22%[3]s\x22 is invalid: %[4]s\x02The task #%[1]d in the step" +
-	" \x22%[2]s\x22 in the job \x22%[3]s\x22 is invalid: %[4]s\x02No name is " +
-	"declared\x02The run_before hooks are invalid: %[1]s\x02The run_after hoo" +
-	"ks are invalid: %[1]s\x02No command is declared\x02No job and no service" +
-	" is declared in the configuration\x02The job #%[1]d has no name declared" +
-	"\x02There are multiple jobs named \x22%[1]s\x22\x02The key of a service " +
-	"is not defined\x02The service \x22%[1]s\x22 is invalid: %[2]s\x02The fil" +
-	"e could not be parsed from YAML: %[1]s\x02The configuration is invalid: " +
-	"%[1]s\x02The contents of the file \x22%[1]s\x22 could not be read: %[2]s" +
-	"\x02ERROR\x02[command]\x02[--flags]\x02%[1]s:\x02Additional Commands:" +
-	"\x04\x01 \x00\x10\x02(default %[1]s)\x04\x01 \x00\x10\x02(default %[1]q)" +
-	"\x02USAGE\x02ALIASES\x02EXAMPLE\x02COMMANDS\x02ADDITIONNAL HELP"
+	"%[2]s\x22 has no name declared\x02The step \x22%[1]s\x22 in the job \x22" +
+	"%[2]s\x22 has invalid run_before hooks: %[3]s\x02The step \x22%[1]s\x22 " +
+	"in the job \x22%[2]s\x22 has invalid run_after hooks: %[3]s\x02The step " +
+	"\x22%[1]s\x22 in the job \x22%[2]s\x22 has no task declared\x02The task " +
+	"\x22%[1]s\x22 in the step \x22%[2]s\x22 in the job \x22%[3]s\x22 is inva" +
+	"lid: %[4]s\x02The task #%[1]d in the step \x22%[2]s\x22 in the job \x22%" +
+	"[3]s\x22 is invalid: %[4]s\x02No name is declared\x02The run_before hook" +
+	"s are invalid: %[1]s\x02The run_after hooks are invalid: %[1]s\x02No com" +
+	"mand is declared\x02No job and no service is declared in the configurati" +
+	"on\x02The key of a service is not defined\x02The service \x22%[1]s\x22 i" +
+	"s invalid: %[2]s\x02The file could not be parsed from YAML: %[1]s\x02The" +
+	" configuration is invalid: %[1]s\x02No valid configuration could be foun" +
+	"d\x02The contents of the file \x22%[1]s\x22 could not be read: %[2]s\x02" +
+	"ERROR\x02[command]\x02[--flags]\x02%[1]s:\x02Additional Commands:\x04" +
+	"\x01 \x00\x10\x02(default %[1]s)\x04\x01 \x00\x10\x02(default %[1]q)\x02" +
+	"USAGE\x02ALIASES\x02EXAMPLE\x02COMMANDS\x02ADDITIONNAL HELP"
 
-var frIndex = []uint32{ // 49 elements
+var frIndex = []uint32{ // 46 elements
 	// Entry 0 - 1F
 	0x00000000, 0x0000002a, 0x00000072, 0x000000a9,
 	0x000000cb, 0x000000ea, 0x00000102, 0x00000125,
 	0x000001c0, 0x000001ea, 0x00000232, 0x00000281,
 	0x000002aa, 0x000002e6, 0x0000031a, 0x0000033f,
-	0x0000036e, 0x0000039b, 0x000003d2, 0x0000041c,
-	0x00000460, 0x00000499, 0x000004e2, 0x0000052d,
-	0x00000577, 0x00000591, 0x000005b9, 0x000005e0,
-	0x00000601, 0x0000063c, 0x00000659, 0x0000067b,
+	0x0000036e, 0x0000039b, 0x000003e5, 0x00000429,
+	0x00000462, 0x000004ad, 0x000004f7, 0x00000511,
+	0x00000539, 0x00000560, 0x00000581, 0x000005bc,
+	0x000005d7, 0x000005ff, 0x0000062b, 0x00000655,
 	// Entry 20 - 3F
-	0x00000696, 0x000006be, 0x000006ea, 0x00000714,
-	0x0000074e, 0x00000755, 0x00000760, 0x0000076c,
-	0x00000774, 0x00000786, 0x0000079f, 0x000007b8,
-	0x000007be, 0x000007c4, 0x000007cc, 0x000007d6,
-	0x000007eb,
-} // Size: 220 bytes
+	0x00000687, 0x000006c1, 0x000006c8, 0x000006d3,
+	0x000006df, 0x000006e7, 0x000006f9, 0x00000712,
+	0x0000072b, 0x00000731, 0x00000737, 0x0000073f,
+	0x00000749, 0x0000075e,
+} // Size: 208 bytes
 
-const frData string = "" + // Size: 2027 bytes
+const frData string = "" + // Size: 1886 bytes
 	"\x02inconnue (compilation depuis les sources)\x02Démultipliez votre envi" +
 	"ronnement de développement par au moins 10^12.\x02Afficher l'information" +
 	" d'aide à propos de la commande\x02Afficher l'information de version\x02" +
@@ -171,25 +163,22 @@ const frData string = "" + // Size: 2027 bytes
 	"vers un dossier\x02Impossible de lire le répertoire de travail actuel : " +
 	"%[1]s\x02Aucun fichier de configuration n'a pu être trouvé\x02La tâche #" +
 	"%[1]d n'a pas de commande\x02Aucun step n'est déclaré dans le job \x22%[" +
-	"1]s\x22\x02Le step #%[1]d du job \x22%[2]s\x22 n'a pas de nom\x02Plusieu" +
-	"rs steps ont le nom \x22%[1]s\x22 dans le job \x22%[2]s\x22\x02Le step " +
-	"\x22%[1]s\x22 dans le job \x22%[2]s\x22 a un hook run_before invalide : " +
-	"%[3]s\x02Le step \x22%[1]s\x22 du job \x22%[2]s\x22 a un hook run_after " +
-	"invalide : %[3]s\x02Le step \x22%[1]s\x22 du job \x22%[2]s\x22 ne contie" +
-	"nt aucune tâche\x02Plusieurs tâches ont le nom \x22%[1]s\x22 dans le ste" +
-	"p \x22%[2]s\x22 du job \x22%[3]s\x22\x02La tâche \x22%[1]s\x22 dans le s" +
-	"tep \x22%[2]s\x22 du job \x22%[3]s\x22 est invalide : %[4]s\x02La tâche " +
-	"#%[1]d dans le step \x22%[2]s\x22 du job \x22%[3]s\x22 est invalide : %[" +
-	"4]s\x02Aucun nom n'est déclaré\x02Le hook run_before est invalide : %[1]" +
-	"s\x02Le hook run_after est invalide : %[1]s\x02Aucune commande n'est déc" +
-	"larée\x02Aucun job ou service n'est déclaré dans la configuration\x02Le " +
-	"job #%[1]d n'a pas de nom\x02Plusieurs jobs ont le nom \x22%[1]s\x22\x02" +
-	"Un service n'a pas de clé\x02Le service \x22%[1]s\x22 est invalide : %[2" +
-	"]s\x02Le fichier YAML n'a pas pu être lu : %[1]s\x02La configuration n'e" +
-	"st pas valide : %[1]s\x02Le contenu du fichier \x22%[1]s\x22 n'a pas pu " +
-	"être lu : %[2]s\x02ERREUR\x02[commande]\x02[--options]\x02%[1]s :\x02Au" +
-	"tres commandes:\x04\x01 \x00\x14\x02(%[1]s par défaut)\x04\x01 \x00\x14" +
-	"\x02(%[1]q par défaut)\x02USAGE\x02ALIAS\x02EXAMPLE\x02COMMANDES\x02AIDE" +
-	" SUPPLÉMENTAIRE"
+	"1]s\x22\x02Le step #%[1]d du job \x22%[2]s\x22 n'a pas de nom\x02Le step" +
+	" \x22%[1]s\x22 dans le job \x22%[2]s\x22 a un hook run_before invalide :" +
+	" %[3]s\x02Le step \x22%[1]s\x22 du job \x22%[2]s\x22 a un hook run_after" +
+	" invalide : %[3]s\x02Le step \x22%[1]s\x22 du job \x22%[2]s\x22 ne conti" +
+	"ent aucune tâche\x02La tâche \x22%[1]s\x22 dans le step \x22%[2]s\x22 du" +
+	" job \x22%[3]s\x22 est invalide : %[4]s\x02La tâche #%[1]d dans le step " +
+	"\x22%[2]s\x22 du job \x22%[3]s\x22 est invalide : %[4]s\x02Aucun nom n'e" +
+	"st déclaré\x02Le hook run_before est invalide : %[1]s\x02Le hook run_aft" +
+	"er est invalide : %[1]s\x02Aucune commande n'est déclarée\x02Aucun job o" +
+	"u service n'est déclaré dans la configuration\x02Un service n'a pas de c" +
+	"lé\x02Le service \x22%[1]s\x22 est invalide : %[2]s\x02Le fichier YAML n" +
+	"'a pas pu être lu : %[1]s\x02La configuration n'est pas valide : %[1]s" +
+	"\x02Aucune configuration valide n'a pu être trouvée\x02Le contenu du fic" +
+	"hier \x22%[1]s\x22 n'a pas pu être lu : %[2]s\x02ERREUR\x02[commande]" +
+	"\x02[--options]\x02%[1]s :\x02Autres commandes:\x04\x01 \x00\x14\x02(%[1" +
+	"]s par défaut)\x04\x01 \x00\x14\x02(%[1]q par défaut)\x02USAGE\x02ALIAS" +
+	"\x02EXAMPLE\x02COMMANDES\x02AIDE SUPPLÉMENTAIRE"
 
-	// Total table size 4287 bytes (4KiB); checksum: 12048AA9
+	// Total table size 3951 bytes (3KiB); checksum: 1BF2E99

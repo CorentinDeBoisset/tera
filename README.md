@@ -107,8 +107,12 @@ Install the `gotext` excutable:
 go install golang.org/x/text/cmd/gotext@latest
 ```
 
-Then update the translation catalogs with:
+You can then update the translation catalogs (in `locales/xx/out.gotext.json`) using:
 
 ```bash
 go generate ./...
 ```
+
+Then, edit and add the missing translations, and copy the file to `locales/xx/messages.gotext.json`.
+
+Finally, re-run `go generate ./...` to compile the translations into a go file.

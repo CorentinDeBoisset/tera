@@ -92,18 +92,18 @@
             "fuzzy": true
         },
         {
-            "id": "An error occured when checking the path \"{Ret}\":\n{Err}",
-            "message": "An error occured when checking the path \"{Ret}\":\n{Err}",
-            "translation": "An error occured when checking the path \"{Ret}\":\n{Err}",
+            "id": "An error occured when checking the path \"{FinalPath}\":\n{Err}",
+            "message": "An error occured when checking the path \"{FinalPath}\":\n{Err}",
+            "translation": "An error occured when checking the path \"{FinalPath}\":\n{Err}",
             "translatorComment": "Copied from source.",
             "placeholders": [
                 {
-                    "id": "Ret",
+                    "id": "FinalPath",
                     "string": "%[1]s",
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 1,
-                    "expr": "ret"
+                    "expr": "finalPath"
                 },
                 {
                     "id": "Err",
@@ -117,18 +117,18 @@
             "fuzzy": true
         },
         {
-            "id": "The path \"{Ret}\" is a directory",
-            "message": "The path \"{Ret}\" is a directory",
-            "translation": "The path \"{Ret}\" is a directory",
+            "id": "The path \"{FinalPath}\" is a directory",
+            "message": "The path \"{FinalPath}\" is a directory",
+            "translation": "The path \"{FinalPath}\" is a directory",
             "translatorComment": "Copied from source.",
             "placeholders": [
                 {
-                    "id": "Ret",
+                    "id": "FinalPath",
                     "string": "%[1]s",
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 1,
-                    "expr": "ret"
+                    "expr": "finalPath"
                 }
             ],
             "fuzzy": true
@@ -175,26 +175,26 @@
             "fuzzy": true
         },
         {
-            "id": "No step is declared in the job \"{Name}\"",
-            "message": "No step is declared in the job \"{Name}\"",
-            "translation": "No step is declared in the job \"{Name}\"",
+            "id": "No step is declared in the job \"{JobId}\"",
+            "message": "No step is declared in the job \"{JobId}\"",
+            "translation": "No step is declared in the job \"{JobId}\"",
             "translatorComment": "Copied from source.",
             "placeholders": [
                 {
-                    "id": "Name",
+                    "id": "JobId",
                     "string": "%[1]s",
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 1,
-                    "expr": "job.Name"
+                    "expr": "jobId"
                 }
             ],
             "fuzzy": true
         },
         {
-            "id": "The step #{StepIdx} in the job \"{Name}\" has no name declared",
-            "message": "The step #{StepIdx} in the job \"{Name}\" has no name declared",
-            "translation": "The step #{StepIdx} in the job \"{Name}\" has no name declared",
+            "id": "The step #{StepIdx} in the job \"{JobId}\" has no name declared",
+            "message": "The step #{StepIdx} in the job \"{JobId}\" has no name declared",
+            "translation": "The step #{StepIdx} in the job \"{JobId}\" has no name declared",
             "translatorComment": "Copied from source.",
             "placeholders": [
                 {
@@ -206,20 +206,20 @@
                     "expr": "stepIdx"
                 },
                 {
-                    "id": "Name",
+                    "id": "JobId",
                     "string": "%[2]s",
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 2,
-                    "expr": "job.Name"
+                    "expr": "jobId"
                 }
             ],
             "fuzzy": true
         },
         {
-            "id": "There are multiple steps named \"{Name}\" in the job \"{Name_1}\"",
-            "message": "There are multiple steps named \"{Name}\" in the job \"{Name_1}\"",
-            "translation": "There are multiple steps named \"{Name}\" in the job \"{Name_1}\"",
+            "id": "The step \"{Name}\" in the job \"{JobId}\" has invalid run_before hooks: {Err}",
+            "message": "The step \"{Name}\" in the job \"{JobId}\" has invalid run_before hooks: {Err}",
+            "translation": "The step \"{Name}\" in the job \"{JobId}\" has invalid run_before hooks: {Err}",
             "translatorComment": "Copied from source.",
             "placeholders": [
                 {
@@ -231,37 +231,12 @@
                     "expr": "step.Name"
                 },
                 {
-                    "id": "Name_1",
+                    "id": "JobId",
                     "string": "%[2]s",
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 2,
-                    "expr": "job.Name"
-                }
-            ],
-            "fuzzy": true
-        },
-        {
-            "id": "The step \"{Name}\" in the job \"{Name_1}\" has invalid run_before hooks: {Err}",
-            "message": "The step \"{Name}\" in the job \"{Name_1}\" has invalid run_before hooks: {Err}",
-            "translation": "The step \"{Name}\" in the job \"{Name_1}\" has invalid run_before hooks: {Err}",
-            "translatorComment": "Copied from source.",
-            "placeholders": [
-                {
-                    "id": "Name",
-                    "string": "%[1]s",
-                    "type": "string",
-                    "underlyingType": "string",
-                    "argNum": 1,
-                    "expr": "step.Name"
-                },
-                {
-                    "id": "Name_1",
-                    "string": "%[2]s",
-                    "type": "string",
-                    "underlyingType": "string",
-                    "argNum": 2,
-                    "expr": "job.Name"
+                    "expr": "jobId"
                 },
                 {
                     "id": "Err",
@@ -275,9 +250,9 @@
             "fuzzy": true
         },
         {
-            "id": "The step \"{Name}\" in the job \"{Name_1}\" has invalid run_after hooks: {Err}",
-            "message": "The step \"{Name}\" in the job \"{Name_1}\" has invalid run_after hooks: {Err}",
-            "translation": "The step \"{Name}\" in the job \"{Name_1}\" has invalid run_after hooks: {Err}",
+            "id": "The step \"{Name}\" in the job \"{JobId}\" has invalid run_after hooks: {Err}",
+            "message": "The step \"{Name}\" in the job \"{JobId}\" has invalid run_after hooks: {Err}",
+            "translation": "The step \"{Name}\" in the job \"{JobId}\" has invalid run_after hooks: {Err}",
             "translatorComment": "Copied from source.",
             "placeholders": [
                 {
@@ -289,12 +264,12 @@
                     "expr": "step.Name"
                 },
                 {
-                    "id": "Name_1",
+                    "id": "JobId",
                     "string": "%[2]s",
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 2,
-                    "expr": "job.Name"
+                    "expr": "jobId"
                 },
                 {
                     "id": "Err",
@@ -308,9 +283,9 @@
             "fuzzy": true
         },
         {
-            "id": "The step \"{Name}\" in the job \"{Name_1}\" has no task declared",
-            "message": "The step \"{Name}\" in the job \"{Name_1}\" has no task declared",
-            "translation": "The step \"{Name}\" in the job \"{Name_1}\" has no task declared",
+            "id": "The step \"{Name}\" in the job \"{JobId}\" has no task declared",
+            "message": "The step \"{Name}\" in the job \"{JobId}\" has no task declared",
+            "translation": "The step \"{Name}\" in the job \"{JobId}\" has no task declared",
             "translatorComment": "Copied from source.",
             "placeholders": [
                 {
@@ -322,20 +297,20 @@
                     "expr": "step.Name"
                 },
                 {
-                    "id": "Name_1",
+                    "id": "JobId",
                     "string": "%[2]s",
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 2,
-                    "expr": "job.Name"
+                    "expr": "jobId"
                 }
             ],
             "fuzzy": true
         },
         {
-            "id": "There are multiple tasks named \"{Name}\" in the step \"{Name_1}\"in the job \"{Name_2}\"",
-            "message": "There are multiple tasks named \"{Name}\" in the step \"{Name_1}\"in the job \"{Name_2}\"",
-            "translation": "There are multiple tasks named \"{Name}\" in the step \"{Name_1}\"in the job \"{Name_2}\"",
+            "id": "The task \"{Name}\" in the step \"{Name_1}\" in the job \"{JobId}\" is invalid: {Err}",
+            "message": "The task \"{Name}\" in the step \"{Name_1}\" in the job \"{JobId}\" is invalid: {Err}",
+            "translation": "The task \"{Name}\" in the step \"{Name_1}\" in the job \"{JobId}\" is invalid: {Err}",
             "translatorComment": "Copied from source.",
             "placeholders": [
                 {
@@ -355,45 +330,12 @@
                     "expr": "step.Name"
                 },
                 {
-                    "id": "Name_2",
+                    "id": "JobId",
                     "string": "%[3]s",
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 3,
-                    "expr": "job.Name"
-                }
-            ],
-            "fuzzy": true
-        },
-        {
-            "id": "The task \"{Name}\" in the step \"{Name_1}\" in the job \"{Name_2}\" is invalid: {Err}",
-            "message": "The task \"{Name}\" in the step \"{Name_1}\" in the job \"{Name_2}\" is invalid: {Err}",
-            "translation": "The task \"{Name}\" in the step \"{Name_1}\" in the job \"{Name_2}\" is invalid: {Err}",
-            "translatorComment": "Copied from source.",
-            "placeholders": [
-                {
-                    "id": "Name",
-                    "string": "%[1]s",
-                    "type": "string",
-                    "underlyingType": "string",
-                    "argNum": 1,
-                    "expr": "task.Name"
-                },
-                {
-                    "id": "Name_1",
-                    "string": "%[2]s",
-                    "type": "string",
-                    "underlyingType": "string",
-                    "argNum": 2,
-                    "expr": "step.Name"
-                },
-                {
-                    "id": "Name_2",
-                    "string": "%[3]s",
-                    "type": "string",
-                    "underlyingType": "string",
-                    "argNum": 3,
-                    "expr": "job.Name"
+                    "expr": "jobId"
                 },
                 {
                     "id": "Err",
@@ -407,9 +349,9 @@
             "fuzzy": true
         },
         {
-            "id": "The task #{TaskIdx} in the step \"{Name}\" in the job \"{Name_1}\" is invalid: {Err}",
-            "message": "The task #{TaskIdx} in the step \"{Name}\" in the job \"{Name_1}\" is invalid: {Err}",
-            "translation": "The task #{TaskIdx} in the step \"{Name}\" in the job \"{Name_1}\" is invalid: {Err}",
+            "id": "The task #{TaskIdx} in the step \"{Name}\" in the job \"{JobId}\" is invalid: {Err}",
+            "message": "The task #{TaskIdx} in the step \"{Name}\" in the job \"{JobId}\" is invalid: {Err}",
+            "translation": "The task #{TaskIdx} in the step \"{Name}\" in the job \"{JobId}\" is invalid: {Err}",
             "translatorComment": "Copied from source.",
             "placeholders": [
                 {
@@ -429,12 +371,12 @@
                     "expr": "step.Name"
                 },
                 {
-                    "id": "Name_1",
+                    "id": "JobId",
                     "string": "%[3]s",
                     "type": "string",
                     "underlyingType": "string",
                     "argNum": 3,
-                    "expr": "job.Name"
+                    "expr": "jobId"
                 },
                 {
                     "id": "Err",
@@ -503,40 +445,6 @@
             "fuzzy": true
         },
         {
-            "id": "The job #{JobIdx} has no name declared",
-            "message": "The job #{JobIdx} has no name declared",
-            "translation": "The job #{JobIdx} has no name declared",
-            "translatorComment": "Copied from source.",
-            "placeholders": [
-                {
-                    "id": "JobIdx",
-                    "string": "%[1]d",
-                    "type": "int",
-                    "underlyingType": "int",
-                    "argNum": 1,
-                    "expr": "jobIdx"
-                }
-            ],
-            "fuzzy": true
-        },
-        {
-            "id": "There are multiple jobs named \"{Name}\"",
-            "message": "There are multiple jobs named \"{Name}\"",
-            "translation": "There are multiple jobs named \"{Name}\"",
-            "translatorComment": "Copied from source.",
-            "placeholders": [
-                {
-                    "id": "Name",
-                    "string": "%[1]s",
-                    "type": "string",
-                    "underlyingType": "string",
-                    "argNum": 1,
-                    "expr": "job.Name"
-                }
-            ],
-            "fuzzy": true
-        },
-        {
             "id": "The key of a service is not defined",
             "message": "The key of a service is not defined",
             "translation": "The key of a service is not defined",
@@ -600,6 +508,13 @@
                     "expr": "err"
                 }
             ],
+            "fuzzy": true
+        },
+        {
+            "id": "No valid configuration could be found",
+            "message": "No valid configuration could be found",
+            "translation": "No valid configuration could be found",
+            "translatorComment": "Copied from source.",
             "fuzzy": true
         },
         {

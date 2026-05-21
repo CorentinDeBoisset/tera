@@ -9,8 +9,6 @@ import (
 	"charm.land/lipgloss/v2"
 )
 
-var ErrorColor = lipgloss.Color("1")
-
 // This is the actual color of the background of the terminal
 var BackgroundColor = sync.OnceValue(func() color.Color {
 	rawColor, err := lipgloss.BackgroundColor(os.Stdin, os.Stderr)
@@ -56,53 +54,94 @@ type HelpTheme struct {
 	CodeblockCommand    lipgloss.Style
 	CodeblockSubCommand lipgloss.Style
 	CodeblockDimmedArg  lipgloss.Style
-	CodeblockFlag       lipgloss.Style
 }
 
-// The base palette is available here: https://coolors.co/palette/264653-2a9d8f-e9c46a-f4a261-e76f51
-
 func LoadHelpTheme(background color.Color) HelpTheme {
-	bgColor := colorToHsl(BackgroundColor())
+	bgColor := colorToHsl(background)
 	lightDark := lipgloss.LightDark(bgColor.L < 0.5)
 
-	var codeblockSurface ColorHsl
-	var codeblockForeground ColorHsl
+	var codeblockSurface, codeblockForeground ColorHsl
+	var baseTitleColor, commandColor, subCommandColor, dimmedArgColor, flagColor ColorHsl
+	var codeblockCommandColor, codeblockSubCommandColor, codeblockDimmedArgColor ColorHsl
 
-	if bgColor.L < 0.22 {
-		codeblockSurface = ColorHsl{bgColor.H, bgColor.S, 0.15 + 0.2*bgColor.L}.Clamped()
-		codeblockForeground = ColorHsl{43, 0.58, 0.8 + 0.2*bgColor.L}.Clamped()
+	body_hue := 43.
+	green_hue := 82.5
+	red_hue := 8.
+	yellow_hue := 53.
+
+	if bgColor.L <= 0.2 {
+		// Lighter surfaces, light text
+		lScale := bgColor.L / 0.2
+
+		baseTitleColor = ColorHsl{green_hue, 0.70, 0.35 + 0.15*lScale}.Clamped()
+		commandColor = ColorHsl{red_hue, 0.80, 0.6 + 0.1*lScale}.Clamped()
+		subCommandColor = ColorHsl{yellow_hue, 0.85, 0.6 + 0.1*lScale}.Clamped()
+		dimmedArgColor = ColorHsl{bgColor.H, bgColor.S, 0.4 + 0.1*lScale}.Clamped()
+		flagColor = ColorHsl{yellow_hue, 0.7, 0.45 + 0.15*lScale}.Clamped()
+		codeblockSurface = ColorHsl{bgColor.H, bgColor.S, 0.15 + 0.08*lScale}.Clamped()
+		codeblockForeground = ColorHsl{body_hue, 0.58, 0.4 + 0.4*lScale}.Clamped()
+		codeblockCommandColor = ColorHsl{red_hue, 0.80, 0.55 + 0.1*lScale}.Clamped()
+		codeblockSubCommandColor = ColorHsl{green_hue, 0.70, 0.4 + 0.3*lScale}.Clamped()
+		codeblockDimmedArgColor = ColorHsl{bgColor.H, bgColor.S, 0.4 + 0.2*lScale}.Clamped()
+	} else if bgColor.L < 0.5 {
+		// Darker surfaces, light text
+		lScale := (bgColor.L - 0.2) / 0.3
+
+		baseTitleColor = ColorHsl{green_hue, 0.80, 0.6 + 0.15*lScale}.Clamped()
+		commandColor = ColorHsl{red_hue, 0.70, 0.6 + 0.25*lScale}.Clamped()
+		subCommandColor = ColorHsl{yellow_hue, 0.85, 0.7 + 0.05*lScale}.Clamped()
+		dimmedArgColor = ColorHsl{bgColor.H, bgColor.S, 0.5 + 0.3*lScale}.Clamped()
+		flagColor = ColorHsl{yellow_hue, 0.7, 0.6 + 0.25*lScale}.Clamped()
+		codeblockSurface = ColorHsl{bgColor.H, bgColor.S, 0.17 + 0.2*lScale}.Clamped()
+		codeblockForeground = ColorHsl{body_hue, 0.58, 0.8 + 0.15*lScale}.Clamped()
+		codeblockCommandColor = ColorHsl{red_hue, 0.80, 0.6 + 0.2*lScale}.Clamped()
+		codeblockSubCommandColor = ColorHsl{green_hue, 0.70, 0.6 + 0.22*lScale}.Clamped()
+		codeblockDimmedArgColor = ColorHsl{bgColor.H, bgColor.S, 0.6 + 0.2*lScale}.Clamped()
+	} else if bgColor.L < 0.75 {
+		// Lighter surfaces, dark text
+		lScale := (bgColor.L - 0.5) / 0.25
+
+		baseTitleColor = ColorHsl{green_hue, 0.80, 0.2 + 0.05*lScale}.Clamped()
+		commandColor = ColorHsl{red_hue, 1.0, 0.35 + 0.05*lScale}.Clamped()
+		subCommandColor = ColorHsl{yellow_hue, 0.85, 0.15 + 0.05*lScale}.Clamped()
+		dimmedArgColor = ColorHsl{bgColor.H, bgColor.S, 0.23 + 0.05*lScale}.Clamped()
+		flagColor = ColorHsl{yellow_hue, 0.7, 0.15 + 0.1*lScale}.Clamped()
+		codeblockSurface = ColorHsl{bgColor.H, bgColor.S, 0.6 + 0.2*lScale}.Clamped()
+		codeblockForeground = ColorHsl{body_hue, 0.58, 0.07 + 0.08*lScale}.Clamped()
+		codeblockCommandColor = ColorHsl{red_hue, 1.0, 0.35 + 0.04*lScale}.Clamped()
+		codeblockSubCommandColor = ColorHsl{green_hue, 0.8, 0.17 + 0.12*lScale}.Clamped()
+		codeblockDimmedArgColor = ColorHsl{bgColor.H, bgColor.S, 0.23 + 0.1*lScale}.Clamped()
 	} else {
-		codeblockSurface = ColorHsl{bgColor.H, bgColor.S, 0.95 * bgColor.L}.Clamped()
-		codeblockForeground = ColorHsl{43, 0.58, 0.15 * bgColor.L}.Clamped()
+		// Darker surfaces, dark text
+		lScale := (bgColor.L - 0.75) / 0.25
+
+		baseTitleColor = ColorHsl{green_hue, 0.80, 0.25 + 0.05*lScale}.Clamped()
+		commandColor = ColorHsl{red_hue, 1.0, 0.4 + 0.05*lScale}.Clamped()
+		subCommandColor = ColorHsl{yellow_hue, 0.85, 0.2 + 0.05*lScale}.Clamped()
+		dimmedArgColor = ColorHsl{bgColor.H, bgColor.S, 0.25 + 0.1*lScale}.Clamped()
+		flagColor = ColorHsl{yellow_hue, 0.7, 0.25 + 0.1*lScale}.Clamped()
+		codeblockSurface = ColorHsl{bgColor.H, 0.05 + 0.8*bgColor.S, 0.65 + 0.3*lScale}.Clamped()
+		codeblockForeground = ColorHsl{body_hue, 0.58, 0.07 + 0.08*lScale}.Clamped()
+		codeblockCommandColor = ColorHsl{red_hue, 1.0, 0.4 + 0.04*lScale}.Clamped()
+		codeblockSubCommandColor = ColorHsl{green_hue, 0.8, 0.2 + 0.07*lScale}.Clamped()
+		codeblockDimmedArgColor = ColorHsl{bgColor.H, bgColor.S, 0.35 + 0.15*lScale}.Clamped()
 	}
 
-	lgCodeblockSurface := lipgloss.Color(hslToHex(codeblockSurface))
-
-	baseCodeBlock := lipgloss.NewStyle().Background(lgCodeblockSurface)
-
-	// TODO: use real colors instead of boilerplate. The commented stuff was a first iteration.
-	//
-	// titleStyle := baseTitleStyle.Foreground(lipgloss.AdaptiveColor{Dark: "#52901b", Light: "#72a443"})
-	// cmdStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#52901b", Light: "#72a443"})
-	// subCmdStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#bc7025", Light: "#bc702"})
-	// dimmedArgStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#808080"))
-	// codeblockStyle := theme.NoticeableSurfaceStyle.Width(width()-2).Padding(1, 2).Margin(0, 1)
-	// highlightedArgStyle := lipgloss.NewStyle().Foreground(lipgloss.AdaptiveColor{Dark: "#5b6ce9", Light: "#838ee2"})
+	baseCodeBlock := lipgloss.NewStyle().Background(lipgloss.Color(hslToHex(codeblockSurface)))
 
 	return HelpTheme{
-		BaseTitle:  lipgloss.NewStyle().Foreground(lipgloss.Color("#508000")),
+		BaseTitle:  lipgloss.NewStyle().Foreground(lipgloss.Color(baseTitleColor.Hex())),
 		ErrorTitle: lipgloss.NewStyle().Background(lipgloss.Red).Foreground(lightDark(lipgloss.BrightWhite, lipgloss.Black)),
 
-		Command:    lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000")),
-		SubCommand: lipgloss.NewStyle().Foreground(lipgloss.Color("#FFFF00")),
-		DimmedArg:  lipgloss.NewStyle().Foreground(lipgloss.Color("#808080")),
-		Flag:       lipgloss.NewStyle().Foreground(lipgloss.Color("#508000")),
+		Command:    lipgloss.NewStyle().Foreground(lipgloss.Color(commandColor.Hex())),
+		SubCommand: lipgloss.NewStyle().Foreground(lipgloss.Color(subCommandColor.Hex())),
+		DimmedArg:  lipgloss.NewStyle().Foreground(lipgloss.Color(dimmedArgColor.Hex())),
+		Flag:       lipgloss.NewStyle().Foreground(lipgloss.Color(flagColor.Hex())),
 
 		Codeblock:           baseCodeBlock.Padding(1, 2).Margin(0, 1).Foreground(lipgloss.Color(codeblockForeground.Hex())),
-		CodeblockCommand:    baseCodeBlock.Foreground(lipgloss.Color("#FF0000")),
-		CodeblockSubCommand: baseCodeBlock.Foreground(lipgloss.Color("#AFAF00")),
-		CodeblockDimmedArg:  baseCodeBlock.Foreground(lipgloss.Color("#808080")),
-		CodeblockFlag:       baseCodeBlock.Foreground(lipgloss.Color("#508000")),
+		CodeblockCommand:    baseCodeBlock.Foreground(lipgloss.Color(codeblockCommandColor.Hex())),
+		CodeblockSubCommand: baseCodeBlock.Foreground(lipgloss.Color(codeblockSubCommandColor.Hex())),
+		CodeblockDimmedArg:  baseCodeBlock.Foreground(lipgloss.Color(codeblockDimmedArgColor.Hex())),
 	}
 }
 
@@ -217,7 +256,7 @@ func LoadTheme(background color.Color) Theme {
 		warningTextCol = ColorHsl{47, 87, 0.15 + 0.1*lScale}.Clamped()
 		errorTextCol = ColorHsl{11, 92, 0.27 + 0.05*lScale}.Clamped()
 	} else {
-		// Darker surfaces, light text
+		// Darker surfaces, dark text
 		lScale := (bgColor.L - 0.75) / 0.25
 
 		noticeableSurfaceColor = ColorHsl{bgColor.H, 0.05 + 0.8*bgColor.S, 0.65 + 0.3*lScale}.Clamped()

@@ -294,8 +294,6 @@ func RenderUsage(cmd *cobra.Command) error {
 }
 
 func RenderHelp(cmd *cobra.Command, _ []string) {
-	// TODO: Add a sexy header
-
 	output := &colorprofile.Writer{
 		Forward: cmd.OutOrStderr(),
 		Profile: colorprofile.Detect(os.Stderr, os.Environ()),

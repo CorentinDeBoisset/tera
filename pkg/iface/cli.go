@@ -211,13 +211,13 @@ func RenderUsage(cmd *cobra.Command) error {
 
 	if len(usageFragments) > 0 {
 		synopsisContent := lipgloss.JoinVertical(lipgloss.Left, usageFragments...)
-		sypopsisWidth := min(max(lipgloss.Width(synopsisContent), 80), 120)
+		sypopsisWidth := min(max(lipgloss.Width(synopsisContent), 80), width()-2) // 2 is for the margin
 		fragments = append(
 			fragments,
 			theme.BaseTitle.Render(i18n.Sprintf("USAGE")),
 			theme.Codeblock.
-				Margin(1, 1).
-				Width(sypopsisWidth+theme.Codeblock.GetHorizontalPadding()+theme.Codeblock.GetHorizontalBorderSize()).
+				Margin(1).
+				Width(sypopsisWidth).
 				Render(synopsisContent),
 		)
 	}

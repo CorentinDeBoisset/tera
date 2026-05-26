@@ -24,6 +24,14 @@ Alternatively, you can run the following command (you will need to install golan
 go install github.com/corentindeboisset/tera
 ```
 
+If you want to, you can install autocompletions for your shell:
+
+```bash
+tera completion <shell-name> > /path/to/completions
+```
+
+The tera CLI uses Cobra to generate its completions, see [this documentation](https://cobra.dev/docs/how-to-guides/shell-completion/) for more informations on how to set them up.
+
 ## ❯ Usage
 
 You can save a configuration in a `.tera.yml` file at the root of your project. The configuration is composed of two main parts, the job list (for `tera run <job-name>`) an the service list (for `tera services`).
